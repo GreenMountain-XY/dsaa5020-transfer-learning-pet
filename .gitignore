@@ -1,0 +1,26 @@
+# OS & Python
+.DS_Store
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# Raw dataset cache (auto-downloaded by torchvision)
+data/
+
+# Duplicate archives & upstream template folder (required ACM files are in report/)
+acmart-primary/
+acmart-primary.zip
+topic8_results_bundle.zip
+projects.pdf
+
+# LaTeX build artifacts (keep main.pdf, main.tex, references.bib, acmart.cls, .bst)
+report/*.aux
+report/*.bbl
+report/*.blg
+report/*.log
+report/*.out
+report/*.fls
+report/*.fdb_latexmk
+report/*.synctex.gz

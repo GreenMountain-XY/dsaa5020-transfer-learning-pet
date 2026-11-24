@@ -1,0 +1,386 @@
+{
+  "dataset": "Oxford-IIIT Pet",
+  "num_classes": 37,
+  "num_cat_breeds": 12,
+  "num_dog_breeds": 25,
+  "total_images": 7349,
+  "splits": {
+    "official_trainval": 3680,
+    "train_100": 2944,
+    "train_10": 295,
+    "val": 736,
+    "test": 3669
+  },
+  "per_class": [
+    {
+      "class_id": 0,
+      "class_name": "Abyssinian",
+      "species": "Cat",
+      "train_100": 80,
+      "train_10": 8,
+      "val": 20,
+      "test": 98,
+      "total": 198
+    },
+    {
+      "class_id": 1,
+      "class_name": "American Bulldog",
+      "species": "Dog",
+      "train_100": 80,
+      "train_10": 8,
+      "val": 20,
+      "test": 100,
+      "total": 200
+    },
+    {
+      "class_id": 2,
+      "class_name": "American Pit Bull Terrier",
+      "species": "Dog",
+      "train_100": 80,
+      "train_10": 8,
+      "val": 20,
+      "test": 100,
+      "total": 200
+    },
+    {
+      "class_id": 3,
+      "class_name": "Basset Hound",
+      "species": "Dog",
+      "train_100": 80,
+      "train_10": 8,
+      "val": 20,
+      "test": 100,
+      "total": 200
+    },
+    {
+      "class_id": 4,
+      "class_name": "Beagle",
+      "species": "Dog",
+      "train_100": 80,
+      "train_10": 8,
+      "val": 20,
+      "test": 100,
+      "total": 200
+    },
+    {
+      "class_id": 5,
+      "class_name": "Bengal",
+      "species": "Cat",
+      "train_100": 80,
+      "train_10": 8,
+      "val": 20,
+      "test": 100,
+      "total": 200
+    },
+    {
+      "class_id": 6,
+      "class_name": "Birman",
+      "species": "Cat",
+      "train_100": 80,
+      "train_10": 8,
+      "val": 20,
+      "test": 100,
+      "total": 200
+    },
+    {
+      "class_id": 7,
+      "class_name": "Bombay",
+      "species": "Cat",
+      "train_100": 77,
+      "train_10": 8,
+      "val": 19,
+      "test": 88,
+      "total": 184
+    },
+    {
+      "class_id": 8,
+      "class_name": "Boxer",
+      "species": "Dog",
+      "train_100": 80,
+      "train_10": 8,
+      "val": 20,
+      "test": 99,
+      "total": 199
+    },
+    {
+      "class_id": 9,
+      "class_name": "British Shorthair",
+      "species": "Cat",
+      "train_100": 80,
+      "train_10": 8,
+      "val": 20,
+      "test": 100,
+      "total": 200
+    },
+    {
+      "class_id": 10,
+      "class_name": "Chihuahua",
+      "species": "Dog",
+      "train_100": 80,
+      "train_10": 8,
+      "val": 20,
+      "test": 100,
+      "total": 200
+    },
+    {
+      "class_id": 11,
+      "class_name": "Egyptian Mau",
+      "species": "Cat",
+      "train_100": 74,
+      "train_10": 7,
+      "val": 19,
+      "test": 97,
+      "total": 190
+    },
+    {
+      "class_id": 12,
+      "class_name": "English Cocker Spaniel",
+      "species": "Dog",
+      "train_100": 77,
+      "train_10": 8,
+      "val": 19,
+      "test": 100,
+      "total": 196
+    },
+    {
+      "class_id": 13,
+      "class_name": "English Setter",
+      "species": "Dog",
+      "train_100": 80,
+      "train_10": 8,
+      "val": 20,
+      "test": 100,
+      "total": 200
+    },
+    {
+      "class_id": 14,
+      "class_name": "German Shorthaired",
+      "species": "Dog",
+      "train_100": 80,
+      "train_10": 8,
+      "val": 20,
+      "test": 100,
+      "total": 200
+    },
+    {
+      "class_id": 15,
+      "class_name": "Great Pyrenees",
+      "species": "Dog",
+      "train_100": 80,
+      "train_10": 8,
+      "val": 20,
+      "test": 100,
+      "total": 200
+    },
+    {
+      "class_id": 16,
+      "class_name": "Havanese",
+      "species": "Dog",
+      "train_100": 80,
+      "train_10": 8,
+      "val": 20,
+      "test": 100,
+      "total": 200
+    },
+    {
+      "class_id": 17,
+      "class_name": "Japanese Chin",
+      "species": "Dog",
+      "train_100": 80,
+      "train_10": 8,
+      "val": 20,
+      "test": 100,
+      "total": 200
+    },
+    {
+      "class_id": 18,
+      "class_name": "Keeshond",
+      "species": "Dog",
+      "train_100": 80,
+      "train_10": 8,
+      "val": 20,
+      "test": 99,
+      "total": 199
+    },
+    {
+      "class_id": 19,
+      "class_name": "Leonberger",
+      "species": "Dog",
+      "train_100": 80,
+      "train_10": 8,
+      "val": 20,
+      "test": 100,
+      "total": 200
+    },
+    {
+      "class_id": 20,
+      "class_name": "Maine Coon",
+      "species": "Cat",
+      "train_100": 80,
+      "train_10": 8,
+      "val": 20,
+      "test": 100,
+      "total": 200
+    },
+    {
+      "class_id": 21,
+      "class_name": "Miniature Pinscher",
+      "species": "Dog",
+      "train_100": 80,
+      "train_10": 8,
+      "val": 20,
+      "test": 100,
+      "total": 200
+    },
+    {
+      "class_id": 22,
+      "class_name": "Newfoundland",
+      "species": "Dog",
+      "train_100": 77,
+      "train_10": 8,
+      "val": 19,
+      "test": 100,
+      "total": 196
+    },
+    {
+      "class_id": 23,
+      "class_name": "Persian",
+      "species": "Cat",
+      "train_100": 80,
+      "train_10": 8,
+      "val": 20,
+      "test": 100,
+      "total": 200
+    },
+    {
+      "class_id": 24,
+      "class_name": "Pomeranian",
+      "species": "Dog",
+      "train_100": 80,
+      "train_10": 8,
+      "val": 20,
+      "test": 100,
+      "total": 200
+    },
+    {
+      "class_id": 25,
+      "class_name": "Pug",
+      "species": "Dog",
+      "train_100": 80,
+      "train_10": 8,
+      "val": 20,
+      "test": 100,
+      "total": 200
+    },
+    {
+      "class_id": 26,
+      "class_name": "Ragdoll",
+      "species": "Cat",
+      "train_100": 80,
+      "train_10": 8,
+      "val": 20,
+      "test": 100,
+      "total": 200
+    },
+    {
+      "class_id": 27,
+      "class_name": "Russian Blue",
+      "species": "Cat",
+      "train_100": 80,
+      "train_10": 8,
+      "val": 20,
+      "test": 100,
+      "total": 200
+    },
+    {
+      "class_id": 28,
+      "class_name": "Saint Bernard",
+      "species": "Dog",
+      "train_100": 80,
+      "train_10": 8,
+      "val": 20,
+      "test": 100,
+      "total": 200
+    },
+    {
+      "class_id": 29,
+      "class_name": "Samoyed",
+      "species": "Dog",
+      "train_100": 80,
+      "train_10": 8,
+      "val": 20,
+      "test": 100,
+      "total": 200
+    },
+    {
+      "class_id": 30,
+      "class_name": "Scottish Terrier",
+      "species": "Dog",
+      "train_100": 80,
+      "train_10": 8,
+      "val": 20,
+      "test": 99,
+      "total": 199
+    },
+    {
+      "class_id": 31,
+      "class_name": "Shiba Inu",
+      "species": "Dog",
+      "train_100": 80,
+      "train_10": 8,
+      "val": 20,
+      "test": 100,
+      "total": 200
+    },
+    {
+      "class_id": 32,
+      "class_name": "Siamese",
+      "species": "Cat",
+      "train_100": 79,
+      "train_10": 8,
+      "val": 20,
+      "test": 100,
+      "total": 199
+    },
+    {
+      "class_id": 33,
+      "class_name": "Sphynx",
+      "species": "Cat",
+      "train_100": 80,
+      "train_10": 8,
+      "val": 20,
+      "test": 100,
+      "total": 200
+    },
+    {
+      "class_id": 34,
+      "class_name": "Staffordshire Bull Terrier",
+      "species": "Dog",
+      "train_100": 80,
+      "train_10": 8,
+      "val": 20,
+      "test": 89,
+      "total": 189
+    },
+    {
+      "class_id": 35,
+      "class_name": "Wheaten Terrier",
+      "species": "Dog",
+      "train_100": 80,
+      "train_10": 8,
+      "val": 20,
+      "test": 100,
+      "total": 200
+    },
+    {
+      "class_id": 36,
+      "class_name": "Yorkshire Terrier",
+      "species": "Dog",
+      "train_100": 80,
+      "train_10": 8,
+      "val": 20,
+      "test": 100,
+      "total": 200
+    }
+  ]
+}
