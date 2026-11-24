@@ -3,6 +3,7 @@
 \usepackage{booktabs}
 \usepackage{multirow}
 \usepackage{graphicx}
+\usepackage{subcaption}
 \usepackage{amsmath}
 \usepackage{microtype}
 \usepackage{enumitem}
@@ -56,7 +57,7 @@ The Oxford-IIIT Pet dataset~\cite{parkhi2012cats} comprises 7,349 real-world pet
 
 \begin{figure*}[t]
   \centering
-  \includegraphics[width=0.72\textwidth]{figures/fig1_eda_class_distribution.pdf}
+  \includegraphics[width=0.92\textwidth]{figures/fig1_eda_class_distribution.pdf}
   \Description{Bar chart showing per-breed training sample counts across 37 pet breeds (12 cat breeds in yellow and 25 dog breeds in blue) for the 100\% pool and 10\% subset.}
   \caption{Exploratory data analysis of Oxford-IIIT Pet: per-breed training sample counts across 12 cat breeds (yellow) and 25 dog breeds (blue) for the 100\% training pool (74--80 images/class) and nested 10\% subset (7--8 images/class). The leak-free split totals 2,944 \texttt{Train (100\%)} (295 for 10\%), 736 fixed \texttt{Val}, and 3,669 official \texttt{Test} images.}
   \label{fig:eda}
@@ -177,21 +178,33 @@ To quantify how labeled data volume interacts with transfer strategy, Figure~\re
 
 \textbf{Extreme Data Efficiency vs.\ Training from Scratch.} Even with 100\% of training labels (2,944 images), \emph{Scratch} attains only \textbf{55.95 $\pm$ 1.33\%} accuracy---still trailing \textbf{5\% \emph{Frozen}} (81.55\%, 148 images) by \textbf{25.60 pp}. Thus, ImageNet pretraining delivers far stronger fine-grained recognition using \textbf{$20\times$ fewer labeled examples} than learning from scratch.
 
-\begin{figure*}[t]
+\begin{figure}[t]
   \centering
-  \includegraphics[width=0.78\textwidth]{figures/fig3_data_efficiency_curve.pdf}
-  \Description{Left: line chart of Test Macro-F1 across 5\% to 100\% labeled data for four strategies. Right: grouped bar chart comparing 10\% vs 100\% Test Accuracy.}
-  \caption{Data efficiency analysis on ResNet-18. Left: Test Macro-F1 across nested subsets (5\%--100\%; filled markers indicate 3-seed runs and open markers indicate single-seed runs), illustrating the crossover between \emph{Frozen} and \emph{Full FT} at 50\% data and the persistent gap over \emph{Scratch}. Right: 10\% vs.\ 100\% Test Accuracy (3-seed $\text{mean} \pm \text{std}$).}
+  \begin{subfigure}{\columnwidth}
+    \centering
+    \includegraphics[width=0.95\columnwidth]{figures/fig3a_data_efficiency_curve.pdf}
+    \caption{Test Macro-F1 across nested subsets (5\%--100\%).}
+    \label{fig:data_eff_curve}
+  \end{subfigure}
+  \par\smallskip
+  \begin{subfigure}{\columnwidth}
+    \centering
+    \includegraphics[width=0.95\columnwidth]{figures/fig3b_10_vs_100_accuracy.pdf}
+    \caption{10\% vs.\ 100\% Test Accuracy (3-seed $\text{mean} \pm \text{std}$).}
+    \label{fig:data_eff_bars}
+  \end{subfigure}
+  \Description{Top: line chart of Test Macro-F1 across 5\% to 100\% labeled data for four strategies. Bottom: grouped bar chart comparing 10\% vs 100\% Test Accuracy.}
+  \caption{Data efficiency analysis on ResNet-18. (a) Filled markers indicate 3-seed runs and open markers indicate single-seed runs, illustrating the crossover between \emph{Frozen} and \emph{Full FT} at 50\% data and the persistent gap over \emph{Scratch}. (b) Direct 10\% vs.\ 100\% Test Accuracy comparison.}
   \label{fig:data_eff}
-\end{figure*}
+\end{figure}
 
-\begin{figure*}[t]
+\begin{figure}[t]
   \centering
-  \includegraphics[width=0.72\textwidth]{figures/fig4a_generalization_curves.pdf}
+  \includegraphics[width=0.95\columnwidth]{figures/fig4a_generalization_curves.pdf}
   \Description{2x2 grid of train vs validation accuracy curves across epochs for four strategies on 10\% data.}
   \caption{Training (dashed) vs.\ Validation (solid) accuracy trajectories on 10\% labeled data (ResNet-18, seed 42).}
   \label{fig:gen_curves}
-\end{figure*}
+\end{figure}
 
 \begin{figure}[t]
   \centering
@@ -244,7 +257,7 @@ Figure~\ref{fig:tradeoff} maps Test Macro-F1 against total GPU training time (lo
 \end{enumerate}
 
 \subsection{Source-Domain Asymmetry and Error Analysis}
-Dissecting Oxford-IIIT Pet errors by species uncovers a deeper mechanism governing transfer learning. ImageNet-1K~\cite{russakovsky2015imagenet} allocates roughly \textbf{120 classes to fine-grained dog breeds} (from Stanford Dogs), but only \textbf{$\sim$5 classes to domestic cats} (\emph{tabby}, \emph{tiger cat}, \emph{Persian}, \emph{Siamese}, \emph{Egyptian cat}). Table~\ref{tab:species} and Figure~\ref{fig:error} show how this source-domain imbalance shapes downstream adaptation:
+Dissecting Oxford-IIIT Pet errors by species uncovers a deeper mechanism governing transfer learning. ImageNet-1K~\cite{russakovsky2015imagenet} allocates roughly \textbf{120 classes to fine-grained dog breeds} (from Stanford Dogs), but only \textbf{$\sim$5 classes to domestic cats} (\emph{tabby}, \emph{tiger cat}, \emph{Persian}, \emph{Siamese}, \emph{Egyptian cat}). Table~\ref{tab:species} and Figures~\ref{fig:error_pairs}--\ref{fig:error_species} show how this source-domain imbalance shapes downstream adaptation:
 
 \begin{table}[t]
   \centering
@@ -270,18 +283,26 @@ Dissecting Oxford-IIIT Pet errors by species uncovers a deeper mechanism governi
   }
 \end{table}
 
-\begin{figure*}[t]
+\begin{figure}[t]
   \centering
-  \includegraphics[width=0.72\textwidth]{figures/fig7_error_analysis.pdf}
-  \Description{Left: horizontal bar chart of top-12 confused breed pairs for Full FT 100\%. Right: Cat vs Dog F1 bar chart across strategies on 10\% data.}
-  \caption{Fine-grained error analysis on ResNet-18. Left: Top-12 most confused test breed pairs for \emph{Full FT (100\%, seed 42)} (371 errors out of 3,669 test images). Right: Cat (12 breeds) vs.\ Dog (25 breeds) mean class F1 on 10\% data (seed 42).}
-  \label{fig:error}
-\end{figure*}
+  \includegraphics[width=0.95\columnwidth]{figures/fig7a_confusion_pairs.pdf}
+  \Description{Horizontal bar chart of top-12 confused breed pairs for Full FT 100\%.}
+  \caption{Top-12 most confused test breed pairs for \emph{Full FT (100\%, seed 42)} on ResNet-18 (371 errors out of 3,669 test images).}
+  \label{fig:error_pairs}
+\end{figure}
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=0.95\columnwidth]{figures/fig7b_species_f1.pdf}
+  \Description{Grouped bar chart comparing Cat vs Dog mean class F1 across strategies on 10\% data.}
+  \caption{Cat (12 breeds) vs.\ Dog (25 breeds) mean class F1 on 10\% labeled data across training strategies (ResNet-18, seed 42).}
+  \label{fig:error_species}
+\end{figure}
 
 \begin{itemize}
   \item \textbf{No Intrinsic Species Bias under Scratch:} Without pretraining, cat breeds are slightly \emph{easier} than dog breeds ($-1.64$ pp at 10\%, $-2.39$ pp at 100\%).
   \item \textbf{Sharp Dog Advantage under Frozen Pretraining:} Under 10\% \emph{Frozen}, dog breeds reach \textbf{88.35\%} F1 while cat breeds lag at \textbf{73.00\%} (\textbf{+15.34 pp} asymmetry). In 10\% \emph{Frozen} errors (616 total), 5 of the top 6 confused pairs are visually close cat breeds (\emph{Bengal $\to$ Egyptian Mau}: 39; \emph{British Shorthair $\leftrightarrow$ Russian Blue}: 59 combined; \emph{Ragdoll $\to$ Birman}: 20).
-  \item \textbf{Where Full Fine-Tuning Actually Helps:} At 100\% data, dog breeds are already saturated by frozen ImageNet features (\emph{Frozen} 91.36\% vs.\ \emph{Full FT} 91.27\%, $-0.09$ pp). Conversely, unfreezing substantially boosts under-represented cat breeds (\textbf{+2.23 pp} \emph{Partial FT}, \textbf{+2.74 pp} \emph{Full FT}), explaining \textbf{virtually 100\% of \emph{Full FT}'s gain over \emph{Frozen}}. Residual errors under \emph{Full FT (100\%)} (Figure~\ref{fig:error}, left) reflect closely related morphotypes: \emph{American Pit Bull Terrier $\leftrightarrow$ Staffordshire Bull Terrier} (40 combined) and \emph{Ragdoll $\to$ Birman} (16).
+  \item \textbf{Where Full Fine-Tuning Actually Helps:} At 100\% data, dog breeds are already saturated by frozen ImageNet features (\emph{Frozen} 91.36\% vs.\ \emph{Full FT} 91.27\%, $-0.09$ pp). Conversely, unfreezing substantially boosts under-represented cat breeds (\textbf{+2.23 pp} \emph{Partial FT}, \textbf{+2.74 pp} \emph{Full FT}), explaining \textbf{virtually 100\% of \emph{Full FT}'s gain over \emph{Frozen}}. Residual errors under \emph{Full FT (100\%)} (Figure~\ref{fig:error_pairs}) reflect closely related morphotypes: \emph{American Pit Bull Terrier $\leftrightarrow$ Staffordshire Bull Terrier} (40 combined) and \emph{Ragdoll $\to$ Birman} (16).
 \end{itemize}
 
 \subsection{Cross-Backbone Validation}

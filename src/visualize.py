@@ -246,7 +246,7 @@ def plot_fig1_eda(eda_path: Path, fig_dir: Path) -> None:
     pc = pd.DataFrame(eda["per_class"]).sort_values(["species", "train_100"], ascending=[True, False])
 
     fig, ax1 = plt.subplots(
-        figsize=plot_style.print_size(2.10, width_fraction=0.72, two_columns=True),
+        figsize=plot_style.print_size(2.15, width_fraction=0.92, two_columns=True),
         layout="constrained",
     )
 
@@ -256,19 +256,19 @@ def plot_fig1_eda(eda_path: Path, fig_dir: Path) -> None:
     for name, background in zip(("Cat", "Dog"), plot_style.GROUP_BACKGROUNDS):
         positions = x[species == name]
         if positions.size:
-            left = -0.9 if name == "Cat" else positions[0] - 0.5
-            right = len(pc) - 0.1 if name == "Dog" else positions[-1] + 0.5
+            left = -0.65 if name == "Cat" else positions[0] - 0.5
+            right = len(pc) - 0.35 if name == "Dog" else positions[-1] + 0.5
             ax1.axvspan(left, right, color=background, lw=0)
             ax1.text(np.mean(positions), 91, f"{name} ({len(positions)})",
                      color="#465771", fontweight="bold", ha="center", va="center")
     ax1.bar(x, pc["train_100"], color=[plot_style.SPECIES_COLORS[name] for name in species],
-            edgecolor="black", linewidth=0.45, width=0.84, zorder=3)
+            edgecolor="black", linewidth=0.40, width=0.90, zorder=3)
     ax1.bar(x, pc["train_10"], color=[light_colors[name] for name in species],
-            edgecolor="black", linewidth=0.45, width=0.84, zorder=4)
+            edgecolor="black", linewidth=0.40, width=0.90, zorder=4)
     ax1.set_xticks(x, [BREED_SHORT.get(name, name) for name in pc["class_name"]],
-                   rotation=55, ha="right", rotation_mode="anchor", fontsize=4.6)
+                   rotation=55, ha="right", rotation_mode="anchor", fontsize=5.2)
     ax1.set_ylabel("Training images", labelpad=2)
-    ax1.set(xlim=(-0.9, len(pc) - 0.1), ylim=(0, 100), yticks=[0, 20, 40, 60, 80])
+    ax1.set(xlim=(-0.65, len(pc) - 0.35), ylim=(0, 100), yticks=[0, 20, 40, 60, 80])
     plot_style.style_axes(ax1, grid="y")
     ax1.tick_params(axis="x", pad=1.5)
     ax1.tick_params(axis="y", pad=2.5)
@@ -280,8 +280,8 @@ def plot_fig1_eda(eda_path: Path, fig_dir: Path) -> None:
             (plot_style.SPECIES_COLORS["Dog"], "Dog (Full)"),
             (light_colors["Dog"], "Dog (Sub)"),
         )],
-        loc="outside upper center", ncol=4, fontsize=5.5,
-        handlelength=0.9, columnspacing=0.7, borderpad=0.22,
+        loc="outside upper center", ncol=4, fontsize=6.0,
+        handlelength=1.0, handletextpad=0.45, columnspacing=2.2, borderpad=0.28,
     )
 
     plot_style.save_figure(fig, fig_dir / "fig1_eda_class_distribution")
@@ -342,15 +342,16 @@ def plot_fig2_model_comparison_10pct(summary: pd.DataFrame, fig_dir: Path) -> No
     plt.close(fig)
 
 
-@plot_style.paper_style(two_columns=True)
+@plot_style.paper_style()
 def plot_fig3_data_efficiency(summary: pd.DataFrame, fig_dir: Path) -> None:
-    """Fig. 3 (Req 3 + Extension): Data Efficiency Curve (5%–100%) & 10% vs 100% bars."""
+    """Fig. 3a & 3b (Req 3 + Extension): Data Efficiency Curve (5%–100%) & 10% vs 100% bars."""
     sub = summary[summary["backbone"] == "resnet18"].copy()
     if sub.empty:
         return
 
-    fig, (ax1, ax2) = plt.subplots(
-        1, 2, figsize=plot_style.print_size(2.08, width_fraction=0.78, two_columns=True),
+    # Fig. 3a: Data efficiency curve across 5%–100% (single-column)
+    fig1, ax1 = plt.subplots(
+        figsize=plot_style.print_size(1.56, width_fraction=0.95),
         layout="constrained",
     )
     fractions = sorted(sub["fraction_pct"].unique())
@@ -385,19 +386,26 @@ def plot_fig3_data_efficiency(summary: pd.DataFrame, fig_dir: Path) -> None:
     plot_style.style_axes(ax1)
     ax1.tick_params(axis="both", pad=2.5)
     seed_handles = [
-        Line2D([], [], linestyle="none", marker="o", markersize=3.2,
+        Line2D([], [], linestyle="none", marker="o", markersize=3.0,
                markerfacecolor=facecolor, markeredgecolor="black", label=label)
         for facecolor, label in (("white", "1 seed"), ("black", "3 seeds"))
     ]
     strat_line_handles = [
         Line2D([], [], color=plot_style.STRATEGY_COLORS[s], linestyle=strat_styles[s],
-               marker=strat_markers[s], markersize=3.0, label=STRATEGY_SHORT[s])
+               marker=strat_markers[s], markersize=2.9, label=STRATEGY_SHORT[s])
         for s in STRATEGY_ORDER if not sub[sub["strategy"] == s].empty
     ]
     ax1.legend(handles=[*strat_line_handles, *seed_handles],
                loc="center left", bbox_to_anchor=(0.02, 0.48), ncol=2,
-               fontsize=5.2, columnspacing=0.6, handletextpad=0.35)
+               fontsize=5.1, columnspacing=0.65, handletextpad=0.35, borderpad=0.25)
+    plot_style.save_figure(fig1, fig_dir / "fig3a_data_efficiency_curve")
+    plt.close(fig1)
 
+    # Fig. 3b: 10% vs 100% Test Accuracy grouped bars (single-column)
+    fig2, ax2 = plt.subplots(
+        figsize=plot_style.print_size(1.52, width_fraction=0.95),
+        layout="constrained",
+    )
     comp = sub[sub["fraction_pct"].isin([10, 100])].copy()
     strategies = [s for s in STRATEGY_ORDER if s in set(comp["strategy"])]
     x = np.arange(len(strategies))
@@ -428,11 +436,11 @@ def plot_fig3_data_efficiency(summary: pd.DataFrame, fig_dir: Path) -> None:
     ax2.set(xlim=(-0.5, max(0.5, len(x) - 0.5)), ylim=(0, 100), yticks=[0, 25, 50, 75, 100])
     plot_style.style_axes(ax2, grid="y")
     ax2.tick_params(axis="both", pad=2.5)
-    ax2.legend(handles=handles, loc="upper left", ncol=1, fontsize=5.3,
+    ax2.legend(handles=handles, loc="upper left", ncol=1, fontsize=5.2,
                borderpad=0.22, labelspacing=0.22)
 
-    plot_style.save_figure(fig, fig_dir / "fig3_data_efficiency_curve")
-    plt.close(fig)
+    plot_style.save_figure(fig2, fig_dir / "fig3b_10_vs_100_accuracy")
+    plt.close(fig2)
 
 
 @plot_style.paper_style(two_columns=True)
@@ -446,43 +454,45 @@ def plot_fig4_generalization(output_dir: Path, summary: pd.DataFrame, fig_dir: P
     if not strategies:
         return
 
-    # Fig. 4a: 2x2 four-panel learning curves with single-row 6-item legend, no titles, unified xticks
-    fig_a, axes_a = plt.subplots(
-        2, 2, figsize=plot_style.print_size(2.15, width_fraction=0.72, two_columns=True),
-        sharey=True, layout="constrained",
-    )
-    for i, (ax, strat) in enumerate(zip(axes_a.flat, strategies)):
-        hist = pd.read_csv(output_dir / "resnet18" / f"{strat}_f010_s42" / "history.csv")
-        color = plot_style.STRATEGY_COLORS[strat]
-        ax.plot(hist["epoch"], hist["train_acc"] * 100, "--", color=color)
-        ax.plot(hist["epoch"], hist["val_acc"] * 100, "-", color=color)
-        row, col = divmod(i, 2)
-        if row == 1:
-            ax.set_xlabel("Epoch", labelpad=1.5)
-        if strat != "scratch":
-            ax.set_xlim(0, 21)
-            ax.set_xticks([5, 10, 15, 20])
-        ax.set(ylim=(0, 105), yticks=[0, 25, 50, 75, 100])
-        plot_style.style_axes(ax)
-        ax.tick_params(axis="x", pad=2.5)
-        ax.tick_params(axis="y", labelleft=(col == 0), pad=2.5)
-    fig_a.supylabel("Accuracy (%)", fontsize=8, fontweight="bold")
-    strat_handles = [
-        plot_style.legend_swatch(plot_style.STRATEGY_COLORS[s], STRATEGY_SHORT[s])
-        for s in strategies
-    ]
-    line_handles = [
-        Line2D([], [], color="black", linestyle=linestyle, label=label)
-        for linestyle, label in (("--", "Train"), ("-", "Validation"))
-    ]
-    fig_a.get_layout_engine().set(h_pad=0.015)
-    fig_a.legend(
-        handles=[*strat_handles, *line_handles],
-        loc="outside upper center", ncol=6, fontsize=5.0,
-        handlelength=1.1, columnspacing=0.5, borderpad=0.20, borderaxespad=0.05,
-    )
-    plot_style.save_figure(fig_a, fig_dir / "fig4a_generalization_curves")
-    plt.close(fig_a)
+    # Fig. 4a: 2x2 four-panel learning curves (single-column, 2-row 3-col legend with generous spacing)
+    with plot_style.paper_style(two_columns=False):
+        fig_a, axes_a = plt.subplots(
+            2, 2, figsize=plot_style.print_size(2.05, width_fraction=0.95),
+            sharey=True, layout="constrained",
+        )
+        for i, (ax, strat) in enumerate(zip(axes_a.flat, strategies)):
+            hist = pd.read_csv(output_dir / "resnet18" / f"{strat}_f010_s42" / "history.csv")
+            color = plot_style.STRATEGY_COLORS[strat]
+            ax.plot(hist["epoch"], hist["train_acc"] * 100, "--", color=color)
+            ax.plot(hist["epoch"], hist["val_acc"] * 100, "-", color=color)
+            row, col = divmod(i, 2)
+            if row == 1:
+                ax.set_xlabel("Epoch", labelpad=1.5)
+            if strat != "scratch":
+                ax.set_xlim(0, 21)
+                ax.set_xticks([5, 10, 15, 20])
+            ax.set(ylim=(0, 105), yticks=[0, 25, 50, 75, 100])
+            plot_style.style_axes(ax)
+            ax.tick_params(axis="x", pad=2.5)
+            ax.tick_params(axis="y", labelleft=(col == 0), pad=2.5)
+        fig_a.supylabel("Accuracy (%)", fontsize=7.5, fontweight="bold")
+        strat_handles = [
+            plot_style.legend_swatch(plot_style.STRATEGY_COLORS[s], STRATEGY_SHORT[s])
+            for s in strategies
+        ]
+        line_handles = [
+            Line2D([], [], color="black", linestyle=linestyle, label=label)
+            for linestyle, label in (("--", "Train"), ("-", "Validation"))
+        ]
+        fig_a.get_layout_engine().set(h_pad=0.025, w_pad=0.035)
+        fig_a.legend(
+            handles=[*strat_handles, *line_handles],
+            loc="outside upper center", ncol=3, fontsize=5.4,
+            handlelength=1.2, handletextpad=0.45, columnspacing=1.8,
+            labelspacing=0.32, borderpad=0.26, borderaxespad=0.08,
+        )
+        plot_style.save_figure(fig_a, fig_dir / "fig4a_generalization_curves")
+        plt.close(fig_a)
 
     # Fig. 4b: Generalization Gap bar chart (2 unified bar colors, clear pair gap, tighter group spacing)
     sub10 = summary[(summary["backbone"] == "resnet18") & (summary["fraction_pct"] == 10)].copy()
@@ -617,13 +627,16 @@ def plot_fig5_tsne(output_dir: Path, fig_dir: Path) -> None:
         "Boxer": "Boxer",
         "British Shorthair": "Brit. Sh.",
     }
-    legend_order = [*classes[:5], *classes[5:]]
+    cats = classes[:5]
+    dogs = classes[5:]
+    # Interleave so matplotlib's column-first ncol=5 puts 5 Cat breeds on row 1 and 5 Dog breeds on row 2
+    legend_order = [item for pair in zip(cats, dogs) for item in pair]
     fig.legend(
-        handles=[Line2D([], [], linestyle="none", marker=marker, color=color, markersize=3.2,
+        handles=[Line2D([], [], linestyle="none", marker=marker, color=color, markersize=3.5,
                         markeredgewidth=0, label=tsne_short.get(name, BREED_SHORT.get(name, name)))
                  for _, name, marker, color in legend_order],
-        loc="outside lower center", ncol=10, fontsize=4.5,
-        handletextpad=0.15, columnspacing=0.4, borderpad=0.25,
+        loc="outside lower center", ncol=5, fontsize=5.2,
+        handletextpad=0.35, columnspacing=2.4, labelspacing=0.42, borderpad=0.30,
     )
     plot_style.save_figure(fig, fig_dir / "fig5_tsne_representations")
     plt.close(fig)
@@ -717,9 +730,9 @@ def plot_fig6_tradeoff(summary: pd.DataFrame, fig_dir: Path) -> None:
     plt.close(fig)
 
 
-@plot_style.paper_style(two_columns=True)
+@plot_style.paper_style()
 def plot_fig7_error_analysis(output_dir: Path, fig_dir: Path) -> None:
-    """Fig. 7 (Extension): Top-12 confused breed pairs + Cat vs. Dog Macro-F1 breakdown."""
+    """Fig. 7a & 7b (Extension): Top-12 confused breed pairs & Cat vs. Dog Macro-F1 breakdown."""
     preferred = [
         ("full_ft_f100_s42", "Full FT (100%)"),
         ("full_ft_f010_s42", "Full FT (10%)"),
@@ -771,12 +784,13 @@ def plot_fig7_error_analysis(output_dir: Path, fig_dir: Path) -> None:
             }
         )
 
-    fig, (ax1, ax2) = plt.subplots(
-        1, 2, figsize=plot_style.print_size(1.72, width_fraction=0.72, two_columns=True),
-        gridspec_kw={"width_ratios": [0.8, 1.2]}, layout="constrained",
+    # Fig. 7a: Top-12 confused breed pairs (single-column)
+    fig1, ax1 = plt.subplots(
+        figsize=plot_style.print_size(1.88, width_fraction=0.95),
+        layout="constrained",
     )
     plot_style.style_axes(ax1, grid="x")
-    ax1.tick_params(axis="y", labelsize=5.5, pad=3)
+    ax1.tick_params(axis="y", labelsize=5.8, pad=3)
 
     if top_pairs:
         pairs = top_pairs[::-1]
@@ -785,10 +799,18 @@ def plot_fig7_error_analysis(output_dir: Path, fig_dir: Path) -> None:
         pair_counts = [count for _, count in pairs]
         ax1.barh(pair_labels, pair_counts, color="#b5b7c4",
                  edgecolor="black", height=0.78, zorder=3)
-        ax1.set_xlabel("Test errors")
+        ax1.set_xlabel("Test errors", labelpad=1.5)
         ax1.set_title(chosen_label)
         ax1.set_xlim(left=0)
 
+    plot_style.save_figure(fig1, fig_dir / "fig7a_confusion_pairs")
+    plt.close(fig1)
+
+    # Fig. 7b: Cat vs. Dog mean class F1 on 10% labeled data (single-column)
+    fig2, ax2 = plt.subplots(
+        figsize=plot_style.print_size(1.56, width_fraction=0.95),
+        layout="constrained",
+    )
     plot_style.style_axes(ax2, grid="y")
     if species_rows:
         sp_df = pd.DataFrame(species_rows)
@@ -801,17 +823,16 @@ def plot_fig7_error_analysis(output_dir: Path, fig_dir: Path) -> None:
             color = plot_style.SPECIES_COLORS[species]
             ax2.bar(x + offset, sp_df[species], width, color=color, edgecolor="black", zorder=3)
             handles.append(plot_style.legend_swatch(color, f"{species} ({count})"))
-        ax2.set_xticks(x, [STRATEGY_SHORT[s].replace(" ", "\n") for s in sp_df["strategy"]],
-                       fontsize=6)
-        ax2.set_ylabel("Mean Class F1 (%)")
+        ax2.set_xticks(x, [STRATEGY_SHORT[s] for s in sp_df["strategy"]], fontsize=6)
+        ax2.set_ylabel("Mean Class F1 (%)", labelpad=1.5)
         ax2.set(xlim=(-0.5, len(x) - 0.5), ylim=(0, 100), yticks=[0, 25, 50, 75, 100])
         ax2.tick_params(pad=2.5)
         ax2.set_title("10% labeled data")
-        ax2.legend(handles=handles, loc="upper left", ncol=1, fontsize=4.6,
-                   borderpad=0.18, labelspacing=0.18, handlelength=0.85, borderaxespad=0.28)
+        ax2.legend(handles=handles, loc="upper left", ncol=1, fontsize=5.3,
+                   borderpad=0.22, labelspacing=0.22, handlelength=0.9, borderaxespad=0.3)
 
-    plot_style.save_figure(fig, fig_dir / "fig7_error_analysis")
-    plt.close(fig)
+    plot_style.save_figure(fig2, fig_dir / "fig7b_species_f1")
+    plt.close(fig2)
 
 
 @plot_style.paper_style()
