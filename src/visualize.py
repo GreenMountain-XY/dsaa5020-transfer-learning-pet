@@ -281,7 +281,7 @@ def plot_fig1_eda(eda_path: Path, fig_dir: Path) -> None:
             (light_colors["Dog"], "Dog (Sub)"),
         )],
         loc="outside upper center", ncol=4, fontsize=6.0,
-        handlelength=1.0, handletextpad=0.45, columnspacing=2.2, borderpad=0.28,
+        handlelength=1.0, columnspacing=2.2,
     )
 
     plot_style.save_figure(fig, fig_dir / "fig1_eda_class_distribution")
@@ -336,7 +336,6 @@ def plot_fig2_model_comparison_10pct(summary: pd.DataFrame, fig_dir: Path) -> No
                                     hatch=f1_hatch),
         ],
         loc="upper left", ncol=1, fontsize=5.3, handlelength=0.85,
-        borderpad=0.22, labelspacing=0.22,
     )
     plot_style.save_figure(fig, fig_dir / "fig2_model_comparison_10pct")
     plt.close(fig)
@@ -397,7 +396,7 @@ def plot_fig3_data_efficiency(summary: pd.DataFrame, fig_dir: Path) -> None:
     ]
     ax1.legend(handles=[*strat_line_handles, *seed_handles],
                loc="center left", bbox_to_anchor=(0.02, 0.48), ncol=2,
-               fontsize=5.1, columnspacing=0.65, handletextpad=0.35, borderpad=0.25)
+               fontsize=5.1, columnspacing=0.75)
     plot_style.save_figure(fig1, fig_dir / "fig3a_data_efficiency_curve")
     plt.close(fig1)
 
@@ -436,8 +435,7 @@ def plot_fig3_data_efficiency(summary: pd.DataFrame, fig_dir: Path) -> None:
     ax2.set(xlim=(-0.5, max(0.5, len(x) - 0.5)), ylim=(0, 100), yticks=[0, 25, 50, 75, 100])
     plot_style.style_axes(ax2, grid="y")
     ax2.tick_params(axis="both", pad=2.5)
-    ax2.legend(handles=handles, loc="upper left", ncol=1, fontsize=5.2,
-               borderpad=0.22, labelspacing=0.22)
+    ax2.legend(handles=handles, loc="upper left", ncol=1, fontsize=5.2)
 
     plot_style.save_figure(fig2, fig_dir / "fig3b_10_vs_100_accuracy")
     plt.close(fig2)
@@ -465,6 +463,15 @@ def plot_fig4_generalization(output_dir: Path, summary: pd.DataFrame, fig_dir: P
             color = plot_style.STRATEGY_COLORS[strat]
             ax.plot(hist["epoch"], hist["train_acc"] * 100, "--", color=color)
             ax.plot(hist["epoch"], hist["val_acc"] * 100, "-", color=color)
+            ax.fill_between(
+                hist["epoch"],
+                hist["val_acc"] * 100,
+                hist["train_acc"] * 100,
+                color=color,
+                alpha=0.14,
+                linewidth=0,
+                zorder=2,
+            )
             row, col = divmod(i, 2)
             if row == 1:
                 ax.set_xlabel("Epoch", labelpad=1.5)
@@ -488,8 +495,7 @@ def plot_fig4_generalization(output_dir: Path, summary: pd.DataFrame, fig_dir: P
         fig_a.legend(
             handles=[*strat_handles, *line_handles],
             loc="outside upper center", ncol=3, fontsize=5.4,
-            handlelength=1.2, handletextpad=0.45, columnspacing=1.8,
-            labelspacing=0.32, borderpad=0.26, borderaxespad=0.08,
+            handlelength=1.2, columnspacing=1.8,
         )
         plot_style.save_figure(fig_a, fig_dir / "fig4a_generalization_curves")
         plt.close(fig_a)
@@ -542,7 +548,7 @@ def plot_fig4_generalization(output_dir: Path, summary: pd.DataFrame, fig_dir: P
         plot_style.style_axes(ax_gap, grid="y")
         ax_gap.tick_params(pad=2.5)
         ax_gap.legend(handles=handles, loc="upper right", ncol=2, fontsize=5.2,
-                      handlelength=0.85, columnspacing=0.6, borderpad=0.2, labelspacing=0.2)
+                      handlelength=0.85, columnspacing=0.7)
 
         plot_style.save_figure(fig_b, fig_dir / "fig4b_generalization_gap")
         plt.close(fig_b)
@@ -636,7 +642,7 @@ def plot_fig5_tsne(output_dir: Path, fig_dir: Path) -> None:
                         markeredgewidth=0, label=tsne_short.get(name, BREED_SHORT.get(name, name)))
                  for _, name, marker, color in legend_order],
         loc="outside lower center", ncol=5, fontsize=5.2,
-        handletextpad=0.35, columnspacing=2.4, labelspacing=0.42, borderpad=0.30,
+        columnspacing=2.4, labelspacing=0.34,
     )
     plot_style.save_figure(fig, fig_dir / "fig5_tsne_representations")
     plt.close(fig)
@@ -719,7 +725,7 @@ def plot_fig6_tradeoff(summary: pd.DataFrame, fig_dir: Path) -> None:
     unified_legend = ax.legend(
         handles=[*strategy_handles, *data_handles, frontier],
         loc="lower right", ncol=2, fontsize=5.0, handlelength=1.0,
-        columnspacing=0.6, borderpad=0.22, labelspacing=0.22,
+        columnspacing=0.7,
     )
     for label in unified_legend.get_texts():
         if label.get_text() == STRATEGY_SHORT["frozen"]:
@@ -829,7 +835,7 @@ def plot_fig7_error_analysis(output_dir: Path, fig_dir: Path) -> None:
         ax2.tick_params(pad=2.5)
         ax2.set_title("10% labeled data")
         ax2.legend(handles=handles, loc="upper left", ncol=1, fontsize=5.3,
-                   borderpad=0.22, labelspacing=0.22, handlelength=0.9, borderaxespad=0.3)
+                   handlelength=0.9)
 
     plot_style.save_figure(fig2, fig_dir / "fig7b_species_f1")
     plt.close(fig2)
@@ -885,9 +891,8 @@ def plot_fig8_backbone_comparison(summary: pd.DataFrame, fig_dir: Path) -> None:
     ax.set_ylabel("Test Macro-F1 (%)", labelpad=2)
     ax.set(xlim=(-0.5, len(x) - 0.5), ylim=(0, 100), yticks=[0, 25, 50, 75, 100])
     ax.tick_params(pad=2.5)
-    ax.legend(handles=handles, loc="upper left", ncol=1, fontsize=4.1,
-              borderpad=0.26, labelspacing=0.14, handlelength=0.7,
-              handletextpad=0.35, borderaxespad=0.40)
+    ax.legend(handles=handles, loc="upper left", ncol=1, fontsize=4.6,
+              handlelength=0.85)
 
     plot_style.save_figure(fig, fig_dir / "fig8_backbone_comparison")
     plt.close(fig)
