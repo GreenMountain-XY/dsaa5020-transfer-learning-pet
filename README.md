@@ -4,8 +4,8 @@
 
 - **Final 6-Page ACM Report (PDF)**: [`report/main.pdf`](report/main.pdf)
 - **LaTeX Source**: [`report/main.tex`](report/main.tex) | [`report/references.bib`](report/references.bib)
-- **Standalone Colab Notebook (with saved outputs)**: [`colab_standalone_topic8.ipynb`](colab_standalone_topic8.ipynb)
-- **Full Aggregated Results**: [`results/tables/summary_table.md`](results/tables/summary_table.md) | [`results/tables/all_runs.csv`](results/tables/all_runs.csv)
+- **Standalone Colab Notebook (with full L4 outputs)**: [`colab_standalone_topic8.ipynb`](colab_standalone_topic8.ipynb)
+- **Aggregated Result Tables**: [`results/tables/summary_table.md`](results/tables/summary_table.md) | [`results/tables/species_f1_table.md`](results/tables/species_f1_table.md) | [`results/tables/all_runs.csv`](results/tables/all_runs.csv)
 
 ---
 
@@ -33,20 +33,47 @@
 
 ---
 
+## Figure & Table Reproducibility Manifest (Data + Plotting Code)
+
+Every figure (`Fig. 1`–`Fig. 8`) and table (`Table 2`, `Table 3`) in [`report/main.pdf`](report/main.pdf) is **100% reproducible directly from the committed raw data in `results/`**—**no GPU and no PyTorch installation required** (only `numpy`, `pandas`, `matplotlib`, `seaborn`, and `scikit-learn`).
+
+### One-Command Reproduction of All Tables & Figures
+```bash
+pip install numpy pandas matplotlib seaborn scikit-learn
+python -m src.visualize --output_dir results
+```
+
+### Per-Figure Data Sources, Plotting Code, and CLI Commands
+
+| Output in Report | Saved Artifact | Underlying Raw Data (in `results/`) | Plotting / Aggregation Function | Single-Item Command |
+| :--- | :--- | :--- | :--- | :--- |
+| **Table 2** (All 44 Runs) | [`summary_table.md`](results/tables/summary_table.md) / [`summary_by_condition.csv`](results/tables/summary_by_condition.csv) | All 44 `metrics.json` in [`resnet18/`](results/resnet18) & [`mobilenet_v3_small/`](results/mobilenet_v3_small) → [`all_runs.csv`](results/tables/all_runs.csv) | [`build_summary_tables`](src/visualize.py#L105-L168) | `python -m src.visualize --output_dir results` |
+| **Table 3** (Cat vs. Dog F1) | [`species_f1_table.md`](results/tables/species_f1_table.md) / [`species_f1_table.csv`](results/tables/species_f1_table.csv) | [`eda_summary.json`](results/eda_summary.json) + 24 ResNet-18 `test_predictions.npz` (10% & 100%, 3 seeds) | [`build_species_f1_table`](src/visualize.py#L171-L226) | `python -m src.visualize --output_dir results` |
+| **Fig. 1** (EDA & Splits) | [`fig1_eda_class_distribution.png`](results/figures/fig1_eda_class_distribution.png) | [`eda_summary.json`](results/eda_summary.json) | [`plot_fig1_eda`](src/visualize.py#L229-L276) | `python -m src.visualize --output_dir results --figures fig1` |
+| **Fig. 2** (10% Comparison) | [`fig2_model_comparison_10pct.png`](results/figures/fig2_model_comparison_10pct.png) | [`summary_by_condition.csv`](results/tables/summary_by_condition.csv) (ResNet-18, 10%, 3 seeds) | [`plot_fig2_model_comparison_10pct`](src/visualize.py#L279-L320) | `python -m src.visualize --output_dir results --figures fig2` |
+| **Fig. 3** (Data Efficiency) | [`fig3_data_efficiency_curve.png`](results/figures/fig3_data_efficiency_curve.png) | [`summary_by_condition.csv`](results/tables/summary_by_condition.csv) (ResNet-18, 5%–100%) | [`plot_fig3_data_efficiency`](src/visualize.py#L323-L395) | `python -m src.visualize --output_dir results --figures fig3` |
+| **Fig. 4** (Learning Curves & Gap) | [`fig4_generalization_curves_and_gap.png`](results/figures/fig4_generalization_curves_and_gap.png) | [`scratch_f010_s42/history.csv`](results/resnet18/scratch_f010_s42/history.csv), [`frozen_f010_s42/history.csv`](results/resnet18/frozen_f010_s42/history.csv), [`partial_ft_f010_s42/history.csv`](results/resnet18/partial_ft_f010_s42/history.csv), [`full_ft_f010_s42/history.csv`](results/resnet18/full_ft_f010_s42/history.csv) + [`summary_by_condition.csv`](results/tables/summary_by_condition.csv) | [`plot_fig4_generalization`](src/visualize.py#L398-L461) | `python -m src.visualize --output_dir results --figures fig4` |
+| **Fig. 5** (t-SNE Embeddings) | [`fig5_tsne_representations.png`](results/figures/fig5_tsne_representations.png) | [`scratch_f010_s42/test_embeddings.npz`](results/resnet18/scratch_f010_s42/test_embeddings.npz), [`frozen_f010_s42/test_embeddings.npz`](results/resnet18/frozen_f010_s42/test_embeddings.npz), [`full_ft_f010_s42/test_embeddings.npz`](results/resnet18/full_ft_f010_s42/test_embeddings.npz), [`full_ft_f100_s42/test_embeddings.npz`](results/resnet18/full_ft_f100_s42/test_embeddings.npz) | [`plot_fig5_tsne`](src/visualize.py#L464-L517) | `python -m src.visualize --output_dir results --figures fig5` |
+| **Fig. 6** (Pareto Trade-off) | [`fig6_efficiency_tradeoff.png`](results/figures/fig6_efficiency_tradeoff.png) | [`summary_by_condition.csv`](results/tables/summary_by_condition.csv) (ResNet-18, 10% & 100%, 3 seeds) | [`plot_fig6_tradeoff`](src/visualize.py#L520-L611) | `python -m src.visualize --output_dir results --figures fig6` |
+| **Fig. 7** (Error Analysis) | [`fig7_error_analysis.png`](results/figures/fig7_error_analysis.png) | [`eda_summary.json`](results/eda_summary.json) + `test_predictions.npz` from [`full_ft_f100_s42`](results/resnet18/full_ft_f100_s42/test_predictions.npz) and 10% seed-42 runs | [`plot_fig7_error_analysis`](src/visualize.py#L614-L691) | `python -m src.visualize --output_dir results --figures fig7` |
+| **Fig. 8** (Cross-Backbone) | [`fig8_backbone_comparison.png`](results/figures/fig8_backbone_comparison.png) | [`summary_by_condition.csv`](results/tables/summary_by_condition.csv) (ResNet-18 & MobileNetV3-Small, 10%) | [`plot_fig8_backbone_comparison`](src/visualize.py#L694-L734) | `python -m src.visualize --output_dir results --figures fig8` |
+
+---
+
 ## Repository Structure
 
 ```text
 .
-├── src/                               # Modular PyTorch codebase
+├── src/                               # Modular PyTorch training & Torch-free visualization codebase
 │   ├── dataset.py                     # Oxford-IIIT Pet download, leak-free stratified nested splits, EDA
 │   ├── models.py                      # ResNet-18 / MobileNetV3-Small / EfficientNet-B0 + BN-safe freezing
 │   ├── train.py                       # AMP training loop, synchronized GPU timing, embedding extraction
 │   ├── run_experiments.py             # CLI orchestrator (core / extended / full_with_mobilenet)
-│   ├── visualize.py                   # Summary tables (CSV/MD) & 8 publication-grade 300 DPI figures
+│   ├── visualize.py                   # Standalone (Torch-free) table & figure reproduction script (fig1–fig8)
 │   └── utils.py                       # Seeding, hardware metadata, I/O helpers
 ├── results/                           # All 44 runs' logs, metrics, predictions, embeddings, tables & figures
 │   ├── eda_summary.json
-│   ├── tables/                        # all_runs.csv, summary_by_condition.csv, summary_table.md
+│   ├── tables/                        # all_runs.csv, summary_by_condition.csv, summary_table.md, species_f1_table.*
 │   ├── figures/                       # fig1 – fig8 (300 DPI PNGs)
 │   ├── resnet18/                      # 36 run directories (5%–100%, multi-seed)
 │   └── mobilenet_v3_small/            # 8 cross-backbone validation run directories
@@ -62,7 +89,7 @@
 
 ---
 
-## Reproducing the Experiments
+## Reproducing the Full Training Experiments
 
 ### Option 1: Google Colab (One-Click)
 Upload [`colab_standalone_topic8.ipynb`](colab_standalone_topic8.ipynb) to Google Colab, switch **Runtime → Change runtime type → T4 / L4 / A100 GPU**, and click **Run all**.
@@ -74,8 +101,8 @@ pip install -r requirements.txt
 # Run all 44 experiments (Core + Extended 2x4 + 5%-100% curve + MobileNetV3-Small)
 python -m src.run_experiments --mode full_with_mobilenet --data_dir data --output_dir results
 
-# Regenerate summary tables and all 8 figures
-python -m src.visualize --output_dir results --data_dir data
+# Regenerate all summary tables and figures from saved results/
+python -m src.visualize --output_dir results
 ```
 
 ### Recompiling the LaTeX Report

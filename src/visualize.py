@@ -1,24 +1,32 @@
-"""Generate all summary tables and publication-grade figures for Requirements 1-5."""
+"""Standalone, Torch-free script to reproduce all summary tables and figures (fig1–fig8)
+directly from saved experiment artifacts in results/.
+
+Examples:
+    # Reproduce all tables and all 8 figures
+    python -m src.visualize --output_dir results
+
+    # Reproduce a single figure (or a subset)
+    python -m src.visualize --output_dir results --figures fig6
+    python -m src.visualize --output_dir results --figures fig1 fig3 fig7
+"""
 
 from __future__ import annotations
 
 import argparse
+import json
 from collections import Counter
 from pathlib import Path
-from typing import Dict, List, Tuple
+from typing import Any, Dict, List, Sequence
 
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
+from matplotlib.lines import Line2D
 import numpy as np
 import pandas as pd
 import seaborn as sns
 from sklearn.manifold import TSNE
 from sklearn.metrics import f1_score, silhouette_score
-
-from src.dataset import is_cat_breed
-from src.run_experiments import collect_all_metrics
-from src.utils import ensure_dir, load_json
 
 STRATEGY_ORDER = ["scratch", "frozen", "partial_ft", "full_ft"]
 STRATEGY_LABELS = {
@@ -40,6 +48,23 @@ STRATEGY_COLORS = {
     "full_ft": "#2CA02C",     # Green
 }
 
+CAT_BREEDS_NORMALIZED = {
+    "abyssinian",
+    "bengal",
+    "birman",
+    "bombay",
+    "british shorthair",
+    "egyptian mau",
+    "maine coon",
+    "persian",
+    "ragdoll",
+    "russian blue",
+    "siamese",
+    "sphynx",
+}
+
+ALL_FIGURE_KEYS = ("fig1", "fig2", "fig3", "fig4", "fig5", "fig6", "fig7", "fig8")
+
 sns.set_theme(style="whitegrid", context="paper", font_scale=1.15)
 plt.rcParams["figure.dpi"] = 150
 plt.rcParams["savefig.dpi"] = 300
@@ -47,8 +72,38 @@ plt.rcParams["axes.spines.top"] = False
 plt.rcParams["axes.spines.right"] = False
 
 
+def _ensure_dir(path: Path | str) -> Path:
+    p = Path(path)
+    p.mkdir(parents=True, exist_ok=True)
+    return p
+
+
+def _load_json(path: Path | str) -> Dict[str, Any]:
+    with open(path, "r", encoding="utf-8") as f:
+        return json.load(f)
+
+
+def _is_cat_breed(class_name: str) -> bool:
+    return class_name.replace("_", " ").strip().lower() in CAT_BREEDS_NORMALIZED
+
+
+def collect_all_metrics(output_dir: str | Path) -> pd.DataFrame:
+    """Scan output_dir/*/*/metrics.json and compile into a DataFrame."""
+    output_dir = Path(output_dir)
+    rows: List[Dict[str, Any]] = []
+    for path in sorted(output_dir.glob("*/*/metrics.json")):
+        m = _load_json(path)
+        hw = m.pop("hardware", {})
+        m["device_type"] = hw.get("device_type", "unknown")
+        m["gpu_name"] = hw.get("gpu_name", "unknown")
+        rows.append(m)
+    if not rows:
+        return pd.DataFrame()
+    return pd.DataFrame(rows)
+
+
 def build_summary_tables(df: pd.DataFrame, tables_dir: Path) -> pd.DataFrame:
-    """Aggregate mean ± std per (backbone, strategy, fraction_pct) and export CSV + Markdown."""
+    """Reproduce Table 2: mean ± std per (backbone, strategy, fraction_pct) as CSV + Markdown."""
     grouped = (
         df.groupby(["backbone", "fraction_pct", "strategy"], as_index=False)
         .agg(
@@ -80,7 +135,6 @@ def build_summary_tables(df: pd.DataFrame, tables_dir: Path) -> pd.DataFrame:
 
     grouped.to_csv(tables_dir / "summary_by_condition.csv", index=False)
 
-    # Pretty Markdown table for direct use in final report
     def _fmt(mean: float, std: float, scale: float = 100.0, suffix: str = "%") -> str:
         if pd.isna(std):
             return f"{mean * scale:.2f}{suffix}"
@@ -114,32 +168,90 @@ def build_summary_tables(df: pd.DataFrame, tables_dir: Path) -> pd.DataFrame:
     return grouped
 
 
+def build_species_f1_table(output_dir: Path, tables_dir: Path) -> pd.DataFrame:
+    """Reproduce Table 3: 3-seed Cat (12 breeds) vs. Dog (25 breeds) mean class F1 on ResNet-18."""
+    eda_path = output_dir / "eda_summary.json"
+    if not eda_path.exists():
+        return pd.DataFrame()
+    eda = _load_json(eda_path)
+    n_classes = eda["num_classes"]
+    cat_ids = [r["class_id"] for r in eda["per_class"] if r["species"] == "Cat"]
+    dog_ids = [r["class_id"] for r in eda["per_class"] if r["species"] == "Dog"]
+
+    rows = []
+    for pct in (10, 100):
+        for strat in STRATEGY_ORDER:
+            cat_vals, dog_vals = [], []
+            for pred_path in sorted((output_dir / "resnet18").glob(f"{strat}_f{pct:03d}_s*/test_predictions.npz")):
+                d = np.load(pred_path)
+                per_cls_f1 = f1_score(
+                    d["y_true"], d["y_pred"], labels=list(range(n_classes)), average=None, zero_division=0
+                )
+                cat_vals.append(float(np.mean(per_cls_f1[cat_ids]) * 100))
+                dog_vals.append(float(np.mean(per_cls_f1[dog_ids]) * 100))
+            if not cat_vals:
+                continue
+            rows.append(
+                {
+                    "fraction_pct": pct,
+                    "strategy": strat,
+                    "n_seeds": len(cat_vals),
+                    "cat_f1_mean": float(np.mean(cat_vals)),
+                    "cat_f1_std": float(np.std(cat_vals, ddof=1)) if len(cat_vals) > 1 else np.nan,
+                    "dog_f1_mean": float(np.mean(dog_vals)),
+                    "dog_f1_std": float(np.std(dog_vals, ddof=1)) if len(dog_vals) > 1 else np.nan,
+                    "dog_minus_cat_pp": float(np.mean(dog_vals) - np.mean(cat_vals)),
+                }
+            )
+
+    sp_df = pd.DataFrame(rows)
+    if sp_df.empty:
+        return sp_df
+    sp_df.to_csv(tables_dir / "species_f1_table.csv", index=False)
+
+    md_lines = [
+        "# Species-Level Mean Class F1 (ResNet-18, Cat vs. Dog)",
+        "",
+        "| Data % | Strategy | Seeds | Cat F1 (12 cls) | Dog F1 (25 cls) | Dog − Cat |",
+        "| :---: | :--- | :---: | :---: | :---: | :---: |",
+    ]
+    for _, r in sp_df.iterrows():
+        c_str = f"{r['cat_f1_mean']:.2f} ± {r['cat_f1_std']:.2f}%" if not pd.isna(r["cat_f1_std"]) else f"{r['cat_f1_mean']:.2f}%"
+        d_str = f"{r['dog_f1_mean']:.2f} ± {r['dog_f1_std']:.2f}%" if not pd.isna(r["dog_f1_std"]) else f"{r['dog_f1_mean']:.2f}%"
+        md_lines.append(
+            f"| {int(r['fraction_pct'])}% | {STRATEGY_SHORT[r['strategy']]} | {int(r['n_seeds'])} | "
+            f"{c_str} | {d_str} | {r['dog_minus_cat_pp']:+.2f} pp |"
+        )
+    (tables_dir / "species_f1_table.md").write_text("\n".join(md_lines) + "\n", encoding="utf-8")
+    return sp_df
+
+
 def plot_fig1_eda(eda_path: Path, fig_dir: Path) -> None:
-    """Requirement 1: Oxford-IIIT Pet class distribution & split breakdown."""
+    """Fig. 1 (Req 1): Oxford-IIIT Pet per-breed class distribution & split summary."""
     if not eda_path.exists():
         print("[WARN] eda_summary.json not found; skipping Fig 1.")
         return
-    eda = load_json(eda_path)
+    eda = _load_json(eda_path)
     pc = pd.DataFrame(eda["per_class"]).sort_values(["species", "train_100"], ascending=[True, False])
 
     fig, (ax1, ax2) = plt.subplots(
-        1, 2, figsize=(15, 6), gridspec_kw={"width_ratios": [3.2, 1.1]}
+        1, 2, figsize=(15, 5.6), gridspec_kw={"width_ratios": [3.2, 1.1]}
     )
 
     colors = ["#E69F00" if s == "Cat" else "#56B4E9" for s in pc["species"]]
     x = np.arange(len(pc))
     ax1.bar(x, pc["train_100"], color=colors, alpha=0.88, label="Train 100% (~80/class)")
-    ax1.bar(x, pc["train_10"], color="#222222", alpha=0.85, width=0.5, label="Train 10% (~8/class)")
+    ax1.bar(x, pc["train_10"], color="#222222", alpha=0.88, width=0.52, label="Train 10% (~8/class)")
     ax1.set_xticks(x)
     ax1.set_xticklabels(pc["class_name"], rotation=75, ha="right", fontsize=7.5)
     ax1.set_ylabel("Number of Training Images")
+    ax1.set_ylim(0, 96)
     ax1.set_title(
         f"Oxford-IIIT Pet Per-Breed Training Distribution "
         f"({eda['num_cat_breeds']} Cat Breeds in Orange, {eda['num_dog_breeds']} Dog Breeds in Blue)"
     )
-    ax1.legend(loc="upper right")
+    ax1.legend(loc="upper right", ncol=2, frameon=True)
 
-    # Right panel: split totals
     splits = eda["splits"]
     split_names = ["Train\n(10%)", "Train\n(100%)", "Val\n(Fixed)", "Test\n(Official)"]
     split_vals = [splits["train_10"], splits["train_100"], splits["val"], splits["test"]]
@@ -165,7 +277,7 @@ def plot_fig1_eda(eda_path: Path, fig_dir: Path) -> None:
 
 
 def plot_fig2_model_comparison_10pct(summary: pd.DataFrame, fig_dir: Path) -> None:
-    """Requirement 2: 10% subset strategy comparison on ResNet-18."""
+    """Fig. 2 (Req 2): 10% subset strategy comparison on ResNet-18 (3-seed mean ± std)."""
     sub = summary[(summary["backbone"] == "resnet18") & (summary["fraction_pct"] == 10)].copy()
     if sub.empty:
         return
@@ -209,14 +321,13 @@ def plot_fig2_model_comparison_10pct(summary: pd.DataFrame, fig_dir: Path) -> No
 
 
 def plot_fig3_data_efficiency(summary: pd.DataFrame, fig_dir: Path) -> None:
-    """Requirement 3 + Extension: Data Efficiency Curve across 5%–100% + 10% vs 100% Frozen highlight."""
+    """Fig. 3 (Req 3 + Extension): Data Efficiency Curve (5%–100%) & 10% vs 100% bars."""
     sub = summary[summary["backbone"] == "resnet18"].copy()
     if sub.empty:
         return
 
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(13.5, 5.2))
 
-    # Left: Full Data Efficiency Curve (Test Macro-F1 vs Data %)
     for strat in STRATEGY_ORDER:
         s_df = sub[sub["strategy"] == strat].sort_values("fraction_pct")
         if s_df.empty:
@@ -243,7 +354,6 @@ def plot_fig3_data_efficiency(summary: pd.DataFrame, fig_dir: Path) -> None:
     ax1.set_title("Data Efficiency Curve (ResNet-18)")
     ax1.legend(loc="lower right")
 
-    # Right: Direct comparison of 10% vs 100% across available strategies
     comp = sub[sub["fraction_pct"].isin([10, 100])].copy()
     strategies = [s for s in STRATEGY_ORDER if s in set(comp["strategy"])]
     x = np.arange(len(strategies))
@@ -286,8 +396,7 @@ def plot_fig3_data_efficiency(summary: pd.DataFrame, fig_dir: Path) -> None:
 
 
 def plot_fig4_generalization(output_dir: Path, summary: pd.DataFrame, fig_dir: Path) -> None:
-    """Requirement 4: Learning curves (Train vs Val) + Generalization Gap analysis."""
-    # Pick seed 42 histories on 10% data for all available strategies
+    """Fig. 4 (Req 4): Train vs. Val learning curves + Generalization Gap bar chart."""
     strategies = [
         s
         for s in STRATEGY_ORDER
@@ -319,7 +428,6 @@ def plot_fig4_generalization(output_dir: Path, summary: pd.DataFrame, fig_dir: P
         ax.set_ylim(0, 105)
         ax.legend(loc="lower right", fontsize=8.5)
 
-    # Bottom spanning subplot: Generalization Gap (Train Acc - Val Acc) at Final vs Best Epoch
     ax_gap = fig.add_subplot(gs[1, :])
     sub10 = summary[(summary["backbone"] == "resnet18") & (summary["fraction_pct"] == 10)].copy()
     sub10 = sub10.set_index("strategy").loc[[s for s in STRATEGY_ORDER if s in set(sub10["strategy"])]].reset_index()
@@ -354,7 +462,7 @@ def plot_fig4_generalization(output_dir: Path, summary: pd.DataFrame, fig_dir: P
 
 
 def plot_fig5_tsne(output_dir: Path, fig_dir: Path) -> None:
-    """Requirement 4: t-SNE visualization of penultimate representations on test set."""
+    """Fig. 5 (Req 4): t-SNE of 512-dim penultimate test representations + Silhouette score."""
     candidates = [
         ("scratch_f010_s42", "From Scratch (10%)"),
         ("frozen_f010_s42", "Frozen Pretrained (10%)"),
@@ -370,7 +478,6 @@ def plot_fig5_tsne(output_dir: Path, fig_dir: Path) -> None:
         print("[INFO] No test_embeddings.npz found; skipping Fig 5 (t-SNE).")
         return
 
-    # Visualize 10 selected classes clearly so clusters are crisp and readable
     selected_classes = list(range(10))
     cmap = plt.get_cmap("tab10")
 
@@ -394,13 +501,7 @@ def plot_fig5_tsne(output_dir: Path, fig_dir: Path) -> None:
 
         for idx, c in enumerate(selected_classes):
             cm = labels_sub == c
-            ax.scatter(
-                emb_2d[cm, 0],
-                emb_2d[cm, 1],
-                s=14,
-                alpha=0.78,
-                color=cmap(idx),
-            )
+            ax.scatter(emb_2d[cm, 0], emb_2d[cm, 1], s=14, alpha=0.78, color=cmap(idx))
         ax.set_title(f"{title}\n(Silhouette = {sil:.3f})", fontsize=10.5)
         ax.set_xticks([])
         ax.set_yticks([])
@@ -417,17 +518,46 @@ def plot_fig5_tsne(output_dir: Path, fig_dir: Path) -> None:
 
 
 def plot_fig6_tradeoff(summary: pd.DataFrame, fig_dir: Path) -> None:
-    """Requirement 5: Performance vs. Training Time & Data Cost Pareto Trade-off."""
+    """Fig. 6 (Req 5): Performance vs. Total Training Time Pareto Frontier."""
     sub = summary[
         (summary["backbone"] == "resnet18") & (summary["fraction_pct"].isin([10, 100]))
     ].copy()
     if sub.empty:
         return
 
-    fig, ax = plt.subplots(figsize=(9.5, 5.8))
-
+    fig, ax = plt.subplots(figsize=(9.6, 5.4))
     markers = {10: "o", 100: "D"}
-    sizes = {10: 130, 100: 210}
+    sizes = {10: 135, 100: 195}
+    offsets = {
+        ("partial_ft", 10): (-12, -36),
+        ("full_ft", 10): (18, -26),
+        ("frozen", 10): (16, 12),
+        ("scratch", 10): (14, 14),
+        ("partial_ft", 100): (-95, 16),
+        ("frozen", 100): (-22, -40),
+        ("full_ft", 100): (18, 16),
+        ("scratch", 100): (-108, -24),
+    }
+
+    # Compute Pareto frontier (maximize Macro-F1, minimize Total Time)
+    pts = sorted(
+        [(r["total_time_mean"], r["test_f1_mean"] * 100) for _, r in sub.iterrows()],
+        key=lambda t: t[0],
+    )
+    pareto, best_y = [], -1.0
+    for px, py in pts:
+        if py > best_y:
+            pareto.append((px, py))
+            best_y = py
+    ax.plot(
+        [p[0] for p in pareto],
+        [p[1] for p in pareto],
+        linestyle="--",
+        color="#555555",
+        lw=1.6,
+        alpha=0.75,
+        zorder=2,
+    )
 
     for _, r in sub.iterrows():
         strat = r["strategy"]
@@ -442,20 +572,21 @@ def plot_fig6_tradeoff(summary: pd.DataFrame, fig_dir: Path) -> None:
             color=STRATEGY_COLORS[strat],
             edgecolors="black",
             linewidths=0.9,
-            alpha=0.9,
+            alpha=0.92,
             zorder=4,
         )
+        dx, dy = offsets.get((strat, pct), (12, 8))
         ax.annotate(
             f"{STRATEGY_SHORT[strat]} ({pct}%)\n{y:.1f}%, {x:.0f}s",
             (x, y),
             textcoords="offset points",
-            xytext=(8, -4 if pct == 10 else 6),
+            xytext=(dx, dy),
             fontsize=8.5,
             fontweight="bold",
+            bbox=dict(boxstyle="round,pad=0.22", fc="white", ec="#cccccc", alpha=0.92),
+            arrowprops=dict(arrowstyle="-", color="#777777", lw=0.8, shrinkA=0, shrinkB=5),
+            zorder=5,
         )
-
-    # Custom legend for color (strategy) and shape (data size)
-    from matplotlib.lines import Line2D
 
     handles = [
         Line2D([0], [0], marker="s", color="w", markerfacecolor=STRATEGY_COLORS[s], markersize=9, label=STRATEGY_LABELS[s])
@@ -464,34 +595,35 @@ def plot_fig6_tradeoff(summary: pd.DataFrame, fig_dir: Path) -> None:
     ] + [
         Line2D([0], [0], marker="o", color="w", markerfacecolor="gray", markeredgecolor="black", markersize=8, label="10% Labeled Data"),
         Line2D([0], [0], marker="D", color="w", markerfacecolor="gray", markeredgecolor="black", markersize=8, label="100% Labeled Data"),
+        Line2D([0], [0], linestyle="--", color="#555555", lw=1.6, label="Pareto Frontier"),
     ]
 
     ax.set_xscale("log")
+    ax.set_xlim(22, 1750)
+    ax.set_ylim(0, 106)
     ax.set_xlabel("Total Training Time (seconds, log scale)")
     ax.set_ylabel("Test Macro-F1 (%)")
-    ax.set_ylim(0, 105)
-    ax.set_title("Trade-off: Classification Performance vs. Computational Cost & Labeled Data Size")
-    ax.legend(handles=handles, loc="lower right", fontsize=8.5, ncol=2)
+    ax.set_title("Trade-off: Classification Performance vs. Computational Cost & Labeled Data Size (ResNet-18)")
+    ax.legend(handles=handles, loc="lower right", fontsize=8.3, ncol=2, frameon=True)
 
     plt.tight_layout()
     plt.savefig(fig_dir / "fig6_efficiency_tradeoff.png", bbox_inches="tight")
     plt.close(fig)
 
 
-def plot_fig7_error_analysis(output_dir: Path, data_dir: Path, fig_dir: Path) -> None:
-    """Requirement 5 Extension: Top confused breed pairs + Cat vs. Dog breakdown."""
-    # Choose best available resnet18 prediction file (prefer full_ft_f100_s42, else full_ft_f010_s42, else frozen_f010_s42)
+def plot_fig7_error_analysis(output_dir: Path, fig_dir: Path) -> None:
+    """Fig. 7 (Extension): Top-12 confused breed pairs + Cat vs. Dog Macro-F1 breakdown."""
     preferred = [
         ("full_ft_f100_s42", "Full FT (100%)"),
         ("full_ft_f010_s42", "Full FT (10%)"),
         ("frozen_f100_s42", "Frozen (100%)"),
         ("frozen_f010_s42", "Frozen (10%)"),
     ]
-    chosen_run, chosen_label, pred_path = None, None, None
+    chosen_label, pred_path = None, None
     for run, label in preferred:
         p = output_dir / "resnet18" / run / "test_predictions.npz"
         if p.exists():
-            chosen_run, chosen_label, pred_path = run, label, p
+            chosen_label, pred_path = label, p
             break
     if pred_path is None:
         return
@@ -499,23 +631,21 @@ def plot_fig7_error_analysis(output_dir: Path, data_dir: Path, fig_dir: Path) ->
     eda_path = output_dir / "eda_summary.json"
     if not eda_path.exists():
         return
-    eda = load_json(eda_path)
+    eda = _load_json(eda_path)
     class_names = [row["class_name"] for row in sorted(eda["per_class"], key=lambda r: r["class_id"])]
 
     preds_npz = np.load(pred_path)
     y_true = preds_npz["y_true"]
     y_pred = preds_npz["y_pred"]
 
-    # Top confused pairs
     mistakes = Counter()
     for t, p in zip(y_true, y_pred):
         if t != p:
             mistakes[(class_names[t], class_names[p])] += 1
     top_pairs = mistakes.most_common(12)
 
-    # Cat vs Dog per-class Macro-F1 across 10% strategies
-    cat_ids = [i for i, n in enumerate(class_names) if is_cat_breed(n)]
-    dog_ids = [i for i, n in enumerate(class_names) if not is_cat_breed(n)]
+    cat_ids = [i for i, n in enumerate(class_names) if _is_cat_breed(n)]
+    dog_ids = [i for i, n in enumerate(class_names) if not _is_cat_breed(n)]
 
     species_rows = []
     for strat in STRATEGY_ORDER:
@@ -523,7 +653,9 @@ def plot_fig7_error_analysis(output_dir: Path, data_dir: Path, fig_dir: Path) ->
         if not p.exists():
             continue
         d = np.load(p)
-        per_cls_f1 = f1_score(d["y_true"], d["y_pred"], labels=list(range(len(class_names))), average=None, zero_division=0)
+        per_cls_f1 = f1_score(
+            d["y_true"], d["y_pred"], labels=list(range(len(class_names))), average=None, zero_division=0
+        )
         species_rows.append(
             {
                 "strategy": STRATEGY_SHORT[strat],
@@ -560,7 +692,7 @@ def plot_fig7_error_analysis(output_dir: Path, data_dir: Path, fig_dir: Path) ->
 
 
 def plot_fig8_backbone_comparison(summary: pd.DataFrame, fig_dir: Path) -> None:
-    """Optional Extension: Cross-backbone validation (ResNet-18 vs MobileNetV3-Small)."""
+    """Fig. 8 (Extension): Cross-backbone validation (ResNet-18 vs. MobileNetV3-Small)."""
     backbones = summary["backbone"].unique().tolist()
     if len(backbones) < 2:
         return
@@ -602,11 +734,15 @@ def plot_fig8_backbone_comparison(summary: pd.DataFrame, fig_dir: Path) -> None:
     plt.close(fig)
 
 
-def generate_all_outputs(output_dir: str | Path = "results", data_dir: str | Path = "data") -> None:
+def generate_all_outputs(
+    output_dir: str | Path = "results",
+    data_dir: str | Path = "data",  # kept for backward CLI compatibility
+    figures: Sequence[str] = ("all",),
+) -> None:
+    del data_dir
     output_dir = Path(output_dir)
-    data_dir = Path(data_dir)
-    tables_dir = ensure_dir(output_dir / "tables")
-    fig_dir = ensure_dir(output_dir / "figures")
+    tables_dir = _ensure_dir(output_dir / "tables")
+    fig_dir = _ensure_dir(output_dir / "figures")
 
     df = collect_all_metrics(output_dir)
     if df.empty:
@@ -615,27 +751,43 @@ def generate_all_outputs(output_dir: str | Path = "results", data_dir: str | Pat
 
     df.to_csv(tables_dir / "all_runs.csv", index=False)
     summary = build_summary_tables(df, tables_dir)
-    print(f"Summary table written to {tables_dir / 'summary_table.md'}")
+    build_species_f1_table(output_dir, tables_dir)
+    print(f"Tables written to {tables_dir} (summary_table.md, species_f1_table.md)")
 
-    plot_fig1_eda(output_dir / "eda_summary.json", fig_dir)
-    plot_fig2_model_comparison_10pct(summary, fig_dir)
-    plot_fig3_data_efficiency(summary, fig_dir)
-    plot_fig4_generalization(output_dir, summary, fig_dir)
-    plot_fig5_tsne(output_dir, fig_dir)
-    plot_fig6_tradeoff(summary, fig_dir)
-    plot_fig7_error_analysis(output_dir, data_dir, fig_dir)
-    plot_fig8_backbone_comparison(summary, fig_dir)
+    selected = set(ALL_FIGURE_KEYS) if "all" in figures else set(figures)
+    dispatch = {
+        "fig1": lambda: plot_fig1_eda(output_dir / "eda_summary.json", fig_dir),
+        "fig2": lambda: plot_fig2_model_comparison_10pct(summary, fig_dir),
+        "fig3": lambda: plot_fig3_data_efficiency(summary, fig_dir),
+        "fig4": lambda: plot_fig4_generalization(output_dir, summary, fig_dir),
+        "fig5": lambda: plot_fig5_tsne(output_dir, fig_dir),
+        "fig6": lambda: plot_fig6_tradeoff(summary, fig_dir),
+        "fig7": lambda: plot_fig7_error_analysis(output_dir, fig_dir),
+        "fig8": lambda: plot_fig8_backbone_comparison(summary, fig_dir),
+    }
+    for key in ALL_FIGURE_KEYS:
+        if key in selected:
+            dispatch[key]()
 
     generated = sorted(p.name for p in fig_dir.glob("*.png"))
-    print(f"Generated {len(generated)} figures in {fig_dir}: {', '.join(generated)}")
+    print(f"Generated/verified {len(generated)} figures in {fig_dir}: {', '.join(generated)}")
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Generate tables and plots from experiment results.")
+    parser = argparse.ArgumentParser(
+        description="Reproduce all summary tables and figures (fig1–fig8) directly from saved results/."
+    )
     parser.add_argument("--output_dir", type=str, default="results")
     parser.add_argument("--data_dir", type=str, default="data")
+    parser.add_argument(
+        "--figures",
+        nargs="+",
+        default=["all"],
+        choices=["all", *ALL_FIGURE_KEYS],
+        help="Subset of figures to regenerate (default: all).",
+    )
     args = parser.parse_args()
-    generate_all_outputs(output_dir=args.output_dir, data_dir=args.data_dir)
+    generate_all_outputs(output_dir=args.output_dir, data_dir=args.data_dir, figures=args.figures)
 
 
 if __name__ == "__main__":
