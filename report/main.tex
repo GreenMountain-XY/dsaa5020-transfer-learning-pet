@@ -56,9 +56,9 @@ The Oxford-IIIT Pet dataset~\cite{parkhi2012cats} comprises 7,349 real-world pet
 
 \begin{figure*}[t]
   \centering
-  \includegraphics[width=0.80\textwidth]{figures/fig1_eda_class_distribution.png}
-  \Description{Bar charts showing per-breed sample counts across 37 pet breeds and overall train, validation, and test split totals.}
-  \caption{Exploratory data analysis of Oxford-IIIT Pet. Left: per-breed sample counts across 12 cat breeds (orange) and 25 dog breeds (blue) for the 100\% training pool (74--80 images/class) and nested 10\% subset (7--8 images/class). Right: leak-free split totals showing \texttt{Train (10\%)}, \texttt{Train (100\%)}, fixed \texttt{Val}, and official \texttt{Test}.}
+  \includegraphics[width=0.72\textwidth]{figures/fig1_eda_class_distribution.pdf}
+  \Description{Bar chart showing per-breed training sample counts across 37 pet breeds (12 cat breeds in yellow and 25 dog breeds in blue) for the 100\% pool and 10\% subset.}
+  \caption{Exploratory data analysis of Oxford-IIIT Pet: per-breed training sample counts across 12 cat breeds (yellow) and 25 dog breeds (blue) for the 100\% training pool (74--80 images/class) and nested 10\% subset (7--8 images/class). The leak-free split totals 2,944 \texttt{Train (100\%)} (295 for 10\%), 736 fixed \texttt{Val}, and 3,669 official \texttt{Test} images.}
   \label{fig:eda}
 \end{figure*}
 
@@ -158,7 +158,7 @@ Table~\ref{tab:main_results} and Figure~\ref{fig:comp10} present the 3-seed comp
 
 \begin{figure}[t]
   \centering
-  \includegraphics[width=0.86\columnwidth]{figures/fig2_model_comparison_10pct.png}
+  \includegraphics[width=0.86\columnwidth]{figures/fig2_model_comparison_10pct.pdf}
   \Description{Grouped bar chart comparing Test Accuracy and Macro-F1 of Scratch, Frozen, Partial FT, and Full FT on 10\% data.}
   \caption{ResNet-18 test accuracy and Macro-F1 on the 10\% labeled subset ($\text{mean} \pm \text{std}$, 3 seeds). Frozen feature extraction outperforms both random initialization (+69.6 pp) and full fine-tuning (+5.8 pp).}
   \label{fig:comp10}
@@ -179,30 +179,38 @@ To quantify how labeled data volume interacts with transfer strategy, Figure~\re
 
 \begin{figure*}[t]
   \centering
-  \includegraphics[width=0.78\textwidth]{figures/fig3_data_efficiency_curve.png}
+  \includegraphics[width=0.78\textwidth]{figures/fig3_data_efficiency_curve.pdf}
   \Description{Left: line chart of Test Macro-F1 across 5\% to 100\% labeled data for four strategies. Right: grouped bar chart comparing 10\% vs 100\% Test Accuracy.}
-  \caption{Data efficiency analysis on ResNet-18. Left: Test Macro-F1 across nested subsets (5\%--100\%), illustrating the crossover between \emph{Frozen} and \emph{Full FT} at 50\% data and the persistent gap over \emph{Scratch}. Right: 10\% vs.\ 100\% Test Accuracy (3-seed $\text{mean} \pm \text{std}$).}
+  \caption{Data efficiency analysis on ResNet-18. Left: Test Macro-F1 across nested subsets (5\%--100\%; filled markers indicate 3-seed runs and open markers indicate single-seed runs), illustrating the crossover between \emph{Frozen} and \emph{Full FT} at 50\% data and the persistent gap over \emph{Scratch}. Right: 10\% vs.\ 100\% Test Accuracy (3-seed $\text{mean} \pm \text{std}$).}
   \label{fig:data_eff}
 \end{figure*}
 
 \begin{figure*}[t]
   \centering
-  \includegraphics[width=0.78\textwidth]{figures/fig4_generalization_curves_and_gap.png}
-  \Description{Top row: train vs validation accuracy curves across epochs for four strategies on 10\% data. Bottom row: bar chart of generalization gap.}
-  \caption{Generalization and overfitting analysis on 10\% labeled data (ResNet-18). Top: Training (dashed) vs.\ Validation (solid) accuracy trajectories (seed 42); shaded regions denote the generalization gap. Bottom: 3-seed mean Train--Val accuracy gap at the best validation epoch and final epoch.}
-  \label{fig:gen_gap}
+  \includegraphics[width=0.72\textwidth]{figures/fig4a_generalization_curves.pdf}
+  \Description{2x2 grid of train vs validation accuracy curves across epochs for four strategies on 10\% data.}
+  \caption{Training (dashed) vs.\ Validation (solid) accuracy trajectories on 10\% labeled data (ResNet-18, seed 42).}
+  \label{fig:gen_curves}
 \end{figure*}
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=0.95\columnwidth]{figures/fig4b_generalization_gap.pdf}
+  \Description{Grouped bar chart of 3-seed mean Train-Val generalization gap at best validation and final epochs, with Scratch truncated at 30 pp.}
+  \caption{3-seed mean Train--Val accuracy gap on 10\% labeled data (ResNet-18) at the best validation epoch and final epoch. Hatched \emph{Scratch} bars are truncated at 30\,pp with exact values annotated above.}
+  \label{fig:gen_gap}
+\end{figure}
 
 \section{Generalization and Representation Analysis (RQ3)}
 
 \subsection{Overfitting Dynamics and Generalization Gap}
-Figure~\ref{fig:gen_gap} contrasts training and validation accuracy curves on the 10\% subset alongside the quantified generalization gap ($\text{Train Acc} - \text{Val Acc}$). \emph{Scratch} exhibits severe overfitting: training accuracy climbs to $\sim$99\% by epoch 60 while validation accuracy stalls below 16\%, opening an \textbf{+82.50\%} gap at the best validation epoch (+83.6\% at final epoch). Even at 100\% data, \emph{Scratch} retains a large +37.06\% gap (Table~\ref{tab:main_results}).
+Figures~\ref{fig:gen_curves} and~\ref{fig:gen_gap} contrast training and validation accuracy curves on the 10\% subset alongside the quantified generalization gap ($\text{Train Acc} - \text{Val Acc}$). \emph{Scratch} exhibits severe overfitting: training accuracy climbs to $\sim$99\% by epoch 60 while validation accuracy stalls below 16\%, opening an \textbf{+82.50\%} gap at the best validation epoch (+83.6\% at final epoch). Even at 100\% data, \emph{Scratch} retains a large +37.06\% gap (Table~\ref{tab:main_results}).
 
 Pretrained models converge $4\times$--$10\times$ faster (peaking in 8--19 epochs vs.\ 73 for \emph{Scratch}) and sharply curb overfitting. Comparing the three transfer regimes on 10\% data clarifies why \emph{Frozen} wins: both \emph{Partial FT} and \emph{Full FT} saturate near $\sim$100\% training accuracy by epoch 3--5 and plateau around $\sim$79\% validation accuracy (best-epoch gaps of \textbf{+18.84\%} and \textbf{+18.37\%}), whereas \emph{Frozen} climbs smoothly to $\sim$86\% validation accuracy with the tightest generalization gap (\textbf{+12.68\%}). At 100\% data, larger supervision shrinks the gap across all transfer strategies to 6.0\%--7.7\%, enabling \emph{Full FT} to exploit its extra plasticity safely.
 
 \begin{figure*}[t]
   \centering
-  \includegraphics[width=0.84\textwidth]{figures/fig5_tsne_representations.png}
+  \includegraphics[width=0.96\textwidth]{figures/fig5_tsne_representations.pdf}
   \Description{Four side-by-side t-SNE scatter plots comparing penultimate test embeddings for Scratch 10\%, Frozen 10\%, Full FT 10\%, and Full FT 100\%.}
   \caption{t-SNE projections of 512-dimensional ResNet-18 penultimate features on the held-out test set (first 10 pet breeds for visual clarity), annotated with Euclidean Silhouette scores computed in the original 512-dim feature space.}
   \label{fig:tsne}
@@ -223,7 +231,7 @@ Figure~\ref{fig:tradeoff} maps Test Macro-F1 against total GPU training time (lo
 
 \begin{figure}[t]
   \centering
-  \includegraphics[width=0.88\columnwidth]{figures/fig6_efficiency_tradeoff.png}
+  \includegraphics[width=0.88\columnwidth]{figures/fig6_efficiency_tradeoff.pdf}
   \Description{Scatter plot of Test Macro-F1 versus total GPU training time on a log scale with a dashed Pareto frontier across 10\% and 100\% data.}
   \caption{Pareto trade-off between Test Macro-F1, total L4 GPU training time (log scale), and labeled data budget on ResNet-18. \emph{Scratch} is strictly Pareto-dominated at both 10\% and 100\% data.}
   \label{fig:tradeoff}
@@ -264,7 +272,7 @@ Dissecting Oxford-IIIT Pet errors by species uncovers a deeper mechanism governi
 
 \begin{figure*}[t]
   \centering
-  \includegraphics[width=0.72\textwidth]{figures/fig7_error_analysis.png}
+  \includegraphics[width=0.72\textwidth]{figures/fig7_error_analysis.pdf}
   \Description{Left: horizontal bar chart of top-12 confused breed pairs for Full FT 100\%. Right: Cat vs Dog F1 bar chart across strategies on 10\% data.}
   \caption{Fine-grained error analysis on ResNet-18. Left: Top-12 most confused test breed pairs for \emph{Full FT (100\%, seed 42)} (371 errors out of 3,669 test images). Right: Cat (12 breeds) vs.\ Dog (25 breeds) mean class F1 on 10\% data (seed 42).}
   \label{fig:error}
@@ -281,7 +289,7 @@ To confirm generality beyond ResNet-18, Figure~\ref{fig:backbone} and Table~\ref
 
 \begin{figure}[t]
   \centering
-  \includegraphics[width=0.82\columnwidth]{figures/fig8_backbone_comparison.png}
+  \includegraphics[width=0.92\columnwidth]{figures/fig8_backbone_comparison.pdf}
   \Description{Grouped bar chart comparing Test Macro-F1 of MobileNetV3-Small and ResNet-18 across four training strategies on 10\% data.}
   \caption{Cross-backbone validation on 10\% labeled data comparing ResNet-18 (11.2M params) and MobileNetV3-Small (1.56M params). Both architectures exhibit identical strategy rankings.}
   \label{fig:backbone}

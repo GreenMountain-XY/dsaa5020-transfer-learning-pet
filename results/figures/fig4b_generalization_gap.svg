@@ -1,0 +1,1547 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns:xlink="http://www.w3.org/1999/xlink" width="227.772pt" height="93.6pt" viewBox="0 0 227.772 93.6" xmlns="http://www.w3.org/2000/svg" version="1.1">
+ <metadata>
+  <rdf:RDF xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+   <cc:Work>
+    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+    <dc:date>2026-11-24T16:44:33.111059</dc:date>
+    <dc:format>image/svg+xml</dc:format>
+    <dc:creator>
+     <cc:Agent>
+      <dc:title>Matplotlib v3.11.0, https://matplotlib.org/</dc:title>
+     </cc:Agent>
+    </dc:creator>
+   </cc:Work>
+  </rdf:RDF>
+ </metadata>
+ <defs>
+  <style type="text/css">*{stroke-linejoin: round; stroke-linecap: butt}</style>
+ </defs>
+ <g id="figure_1">
+  <g id="patch_1">
+   <path d="M 0 93.6 
+L 227.772 93.6 
+L 227.772 0 
+L 0 0 
+z
+" style="fill: #ffffff"/>
+  </g>
+  <g id="axes_1">
+   <g id="patch_2">
+    <path d="M 26.072813 80.3 
+L 224.532 80.3 
+L 224.532 2.52 
+L 26.072813 2.52 
+z
+" style="fill: #ffffff"/>
+   </g>
+   <g id="patch_3">
+    <path d="M 26.072812 80.3 
+L 75.687609 80.3 
+L 75.687609 2.52 
+L 26.072812 2.52 
+z
+" clip-path="url(#p9b749df075)" style="fill: #f1f3e8"/>
+   </g>
+   <g id="patch_4">
+    <path d="M 75.687609 80.3 
+L 125.302406 80.3 
+L 125.302406 2.52 
+L 75.687609 2.52 
+z
+" clip-path="url(#p9b749df075)" style="fill: #e9eae4"/>
+   </g>
+   <g id="patch_5">
+    <path d="M 125.302406 80.3 
+L 174.917203 80.3 
+L 174.917203 2.52 
+L 125.302406 2.52 
+z
+" clip-path="url(#p9b749df075)" style="fill: #e1e2dc"/>
+   </g>
+   <g id="patch_6">
+    <path d="M 174.917203 80.3 
+L 224.532 80.3 
+L 224.532 2.52 
+L 174.917203 2.52 
+z
+" clip-path="url(#p9b749df075)" style="fill: #d9dad5"/>
+   </g>
+   <g id="matplotlib.axis_1">
+    <g id="xtick_1">
+     <g id="line2d_1"/>
+     <g id="text_1">
+      <!-- Scratch -->
+      <g transform="translate(37.984898 89.34) scale(0.06 -0.06)">
+       <defs>
+        <path id="IntoneMonoNFM-36" d="M 1971 378 
+Q 2419 378 2656 566 
+Q 2893 755 2893 1107 
+Q 2893 1376 2720 1539 
+Q 2547 1702 2157 1824 
+L 1702 1971 
+Q 1139 2144 876 2435 
+Q 614 2726 614 3181 
+Q 614 3661 1004 3968 
+Q 1395 4275 2048 4275 
+Q 2355 4275 2640 4230 
+Q 2925 4186 3334 4070 
+L 3238 3590 
+Q 2854 3706 2563 3760 
+Q 2272 3814 2035 3814 
+Q 1619 3814 1398 3660 
+Q 1178 3507 1178 3219 
+Q 1178 2931 1347 2761 
+Q 1517 2592 1920 2464 
+L 2381 2317 
+Q 2970 2131 3213 1862 
+Q 3456 1594 3456 1133 
+Q 3456 563 3062 240 
+Q 2669 -83 1965 -83 
+Q 1606 -83 1235 -6 
+Q 864 70 448 230 
+L 582 704 
+Q 1024 544 1376 461 
+Q 1728 378 1971 378 
+z
+" transform="scale(0.015625)"/>
+        <path id="IntoneMonoNFM-46" d="M 2099 2605 
+Q 1619 2605 1318 2297 
+Q 1018 1990 1018 1504 
+Q 1018 1005 1306 688 
+Q 1594 371 2042 371 
+Q 2330 371 2608 460 
+Q 2886 550 3251 755 
+L 3488 371 
+Q 3053 122 2720 13 
+Q 2387 -96 2016 -96 
+Q 1312 -96 880 342 
+Q 448 781 448 1510 
+Q 448 2170 921 2621 
+Q 1395 3072 2093 3072 
+Q 2451 3072 2771 2960 
+Q 3091 2848 3475 2592 
+L 3219 2189 
+Q 2874 2413 2624 2509 
+Q 2374 2605 2099 2605 
+z
+" transform="scale(0.015625)"/>
+        <path id="IntoneMonoNFM-55" d="M 326 0 
+L 326 461 
+L 1107 461 
+L 1107 2515 
+L 454 2515 
+L 454 2976 
+L 1594 2976 
+L 1626 1939 
+Q 2029 2509 2285 2723 
+Q 2541 2938 2931 2963 
+L 3558 3002 
+L 3597 2458 
+L 2989 2406 
+Q 2682 2387 2534 2320 
+Q 2387 2253 2221 2093 
+Q 2125 2010 2000 1866 
+Q 1875 1722 1651 1453 
+L 1651 461 
+L 2605 461 
+L 2605 0 
+L 326 0 
+z
+" transform="scale(0.015625)"/>
+        <path id="IntoneMonoNFM-44" d="M 3130 2054 
+L 3130 749 
+Q 3130 557 3181 493 
+Q 3232 429 3392 416 
+L 3680 397 
+L 3642 -26 
+L 3341 -13 
+Q 3008 0 2841 102 
+Q 2675 205 2611 422 
+L 2554 422 
+Q 2259 179 1961 67 
+Q 1664 -45 1331 -45 
+Q 915 -45 672 182 
+Q 429 410 429 800 
+Q 429 1242 669 1446 
+Q 909 1651 1485 1715 
+L 2592 1843 
+L 2592 2067 
+Q 2592 2368 2425 2473 
+Q 2259 2579 1811 2579 
+Q 1626 2579 1341 2550 
+Q 1056 2522 755 2470 
+L 698 2912 
+Q 1018 2970 1315 2998 
+Q 1613 3027 1830 3027 
+Q 2534 3027 2832 2809 
+Q 3130 2592 3130 2054 
+z
+M 973 838 
+Q 973 614 1094 499 
+Q 1216 384 1453 384 
+Q 1715 384 1971 496 
+Q 2227 608 2592 877 
+L 2592 1485 
+L 1581 1350 
+Q 1254 1306 1113 1194 
+Q 973 1082 973 838 
+z
+" transform="scale(0.015625)"/>
+        <path id="IntoneMonoNFM-57" d="M 1402 1133 
+L 1402 2515 
+L 397 2515 
+L 397 2976 
+L 1408 2976 
+L 1408 4083 
+L 1939 4083 
+L 1939 2976 
+L 3264 2976 
+L 3264 2515 
+L 1946 2515 
+L 1946 1210 
+Q 1946 800 2067 646 
+Q 2189 493 2541 474 
+L 3443 422 
+L 3405 -45 
+L 2413 0 
+Q 1824 32 1613 269 
+Q 1402 506 1402 1133 
+z
+" transform="scale(0.015625)"/>
+        <path id="IntoneMonoNFM-4b" d="M 608 4544 
+L 1158 4544 
+L 1158 2336 
+Q 1562 2714 1846 2867 
+Q 2131 3021 2438 3021 
+Q 2874 3021 3107 2774 
+Q 3341 2528 3341 2074 
+L 3341 0 
+L 2790 0 
+L 2790 1978 
+Q 2790 2259 2668 2390 
+Q 2547 2522 2285 2522 
+Q 2061 2522 1814 2368 
+Q 1568 2214 1158 1830 
+L 1158 0 
+L 608 0 
+L 608 4544 
+z
+" transform="scale(0.015625)"/>
+       </defs>
+       <use xlink:href="#IntoneMonoNFM-36"/>
+       <use xlink:href="#IntoneMonoNFM-46" transform="translate(61.40625 0)"/>
+       <use xlink:href="#IntoneMonoNFM-55" transform="translate(122.8125 0)"/>
+       <use xlink:href="#IntoneMonoNFM-44" transform="translate(184.21875 0)"/>
+       <use xlink:href="#IntoneMonoNFM-57" transform="translate(245.625 0)"/>
+       <use xlink:href="#IntoneMonoNFM-46" transform="translate(307.03125 0)"/>
+       <use xlink:href="#IntoneMonoNFM-4b" transform="translate(368.4375 0)"/>
+      </g>
+     </g>
+    </g>
+    <g id="xtick_2">
+     <g id="line2d_2"/>
+     <g id="text_2">
+      <!-- Frozen -->
+      <g transform="translate(89.441883 89.34) scale(0.06 -0.06)">
+       <defs>
+        <path id="IntoneMonoNFM-29" d="M 646 0 
+L 646 4192 
+L 3405 4192 
+L 3405 3731 
+L 1203 3731 
+L 1203 2144 
+L 3194 2144 
+L 3194 1683 
+L 1203 1683 
+L 1203 0 
+L 646 0 
+z
+" transform="scale(0.015625)"/>
+        <path id="IntoneMonoNFM-52" d="M 3520 1478 
+Q 3520 781 3081 342 
+Q 2643 -96 1952 -96 
+Q 1267 -96 838 345 
+Q 410 787 410 1498 
+Q 410 2189 851 2630 
+Q 1293 3072 1978 3072 
+Q 2656 3072 3088 2627 
+Q 3520 2182 3520 1478 
+z
+M 966 1491 
+Q 966 973 1238 669 
+Q 1510 365 1965 365 
+Q 2426 365 2694 665 
+Q 2963 966 2963 1485 
+Q 2963 1990 2688 2304 
+Q 2413 2618 1965 2618 
+Q 1517 2618 1241 2310 
+Q 966 2003 966 1491 
+z
+" transform="scale(0.015625)"/>
+        <path id="IntoneMonoNFM-5d" d="M 3450 0 
+L 550 0 
+L 550 378 
+L 2586 2515 
+L 2586 2534 
+L 627 2534 
+L 627 2976 
+L 3347 2976 
+L 3347 2592 
+L 1338 467 
+L 1338 448 
+L 3450 448 
+L 3450 0 
+z
+" transform="scale(0.015625)"/>
+        <path id="IntoneMonoNFM-48" d="M 2285 403 
+L 2899 384 
+L 2880 -45 
+L 2125 -32 
+Q 1299 -19 889 349 
+Q 480 717 480 1440 
+Q 480 2150 918 2611 
+Q 1357 3072 2029 3072 
+Q 2701 3072 3078 2665 
+Q 3456 2259 3456 1523 
+Q 3456 1453 3449 1395 
+Q 3443 1338 3437 1293 
+L 1024 1293 
+Q 1069 845 1366 633 
+Q 1664 422 2285 403 
+z
+M 2029 2637 
+Q 1638 2637 1366 2384 
+Q 1094 2131 1037 1702 
+L 2912 1702 
+Q 2880 2163 2656 2400 
+Q 2432 2637 2029 2637 
+z
+" transform="scale(0.015625)"/>
+        <path id="IntoneMonoNFM-51" d="M 608 2976 
+L 1075 2976 
+L 1133 2310 
+Q 1549 2707 1837 2864 
+Q 2125 3021 2438 3021 
+Q 2874 3021 3107 2774 
+Q 3341 2528 3341 2074 
+L 3341 0 
+L 2790 0 
+L 2790 1978 
+Q 2790 2259 2668 2390 
+Q 2547 2522 2285 2522 
+Q 2061 2522 1814 2368 
+Q 1568 2214 1158 1830 
+L 1158 0 
+L 608 0 
+L 608 2976 
+z
+" transform="scale(0.015625)"/>
+       </defs>
+       <use xlink:href="#IntoneMonoNFM-29"/>
+       <use xlink:href="#IntoneMonoNFM-55" transform="translate(61.40625 0)"/>
+       <use xlink:href="#IntoneMonoNFM-52" transform="translate(122.8125 0)"/>
+       <use xlink:href="#IntoneMonoNFM-5d" transform="translate(184.21875 0)"/>
+       <use xlink:href="#IntoneMonoNFM-48" transform="translate(245.625 0)"/>
+       <use xlink:href="#IntoneMonoNFM-51" transform="translate(307.03125 0)"/>
+      </g>
+     </g>
+    </g>
+    <g id="xtick_3">
+     <g id="line2d_3"/>
+     <g id="text_3">
+      <!-- Partial FT -->
+      <g transform="translate(131.68793 89.34) scale(0.06 -0.06)">
+       <defs>
+        <path id="IntoneMonoNFM-33" d="M 608 0 
+L 608 4192 
+L 2035 4192 
+Q 2797 4192 3219 3837 
+Q 3642 3482 3642 2842 
+Q 3642 2189 3197 1827 
+Q 2752 1466 1952 1466 
+L 1165 1466 
+L 1165 0 
+L 608 0 
+z
+M 3078 2829 
+Q 3078 3264 2809 3497 
+Q 2541 3731 2035 3731 
+L 1165 3731 
+L 1165 1920 
+L 1990 1920 
+Q 2502 1920 2790 2160 
+Q 3078 2400 3078 2829 
+z
+" transform="scale(0.015625)"/>
+        <path id="IntoneMonoNFM-4c" d="M 2464 4256 
+Q 2464 4070 2336 3964 
+Q 2208 3859 1984 3859 
+Q 1766 3859 1641 3968 
+Q 1517 4077 1517 4269 
+Q 1517 4448 1648 4560 
+Q 1779 4672 1997 4672 
+Q 2227 4672 2345 4566 
+Q 2464 4461 2464 4256 
+z
+M 730 0 
+L 730 461 
+L 1786 461 
+L 1786 2515 
+L 858 2515 
+L 858 2976 
+L 2336 2976 
+L 2336 461 
+L 3398 461 
+L 3398 0 
+L 730 0 
+z
+" transform="scale(0.015625)"/>
+        <path id="IntoneMonoNFM-4f" d="M 1549 1056 
+L 1549 4083 
+L 378 4083 
+L 378 4544 
+L 2093 4544 
+L 2093 1114 
+Q 2093 774 2224 630 
+Q 2355 486 2682 474 
+L 3379 429 
+L 3347 -45 
+L 2586 0 
+Q 1997 32 1773 262 
+Q 1549 493 1549 1056 
+z
+" transform="scale(0.015625)"/>
+        <path id="IntoneMonoNFM-3" transform="scale(0.015625)"/>
+        <path id="IntoneMonoNFM-37" d="M 1690 3731 
+L 326 3731 
+L 326 4192 
+L 3603 4192 
+L 3603 3731 
+L 2246 3731 
+L 2246 0 
+L 1690 0 
+L 1690 3731 
+z
+" transform="scale(0.015625)"/>
+       </defs>
+       <use xlink:href="#IntoneMonoNFM-33"/>
+       <use xlink:href="#IntoneMonoNFM-44" transform="translate(61.40625 0)"/>
+       <use xlink:href="#IntoneMonoNFM-55" transform="translate(122.8125 0)"/>
+       <use xlink:href="#IntoneMonoNFM-57" transform="translate(184.21875 0)"/>
+       <use xlink:href="#IntoneMonoNFM-4c" transform="translate(245.625 0)"/>
+       <use xlink:href="#IntoneMonoNFM-44" transform="translate(307.03125 0)"/>
+       <use xlink:href="#IntoneMonoNFM-4f" transform="translate(368.4375 0)"/>
+       <use xlink:href="#IntoneMonoNFM-3" transform="translate(429.84375 0)"/>
+       <use xlink:href="#IntoneMonoNFM-29" transform="translate(491.25 0)"/>
+       <use xlink:href="#IntoneMonoNFM-37" transform="translate(552.65625 0)"/>
+      </g>
+     </g>
+    </g>
+    <g id="xtick_4">
+     <g id="line2d_4"/>
+     <g id="text_4">
+      <!-- Full FT -->
+      <g transform="translate(186.829289 89.34) scale(0.06 -0.06)">
+       <defs>
+        <path id="IntoneMonoNFM-58" d="M 3322 2976 
+L 3322 0 
+L 2822 0 
+L 2790 659 
+Q 2374 262 2086 108 
+Q 1798 -45 1491 -45 
+Q 1056 -45 822 201 
+Q 589 448 589 902 
+L 589 2976 
+L 1139 2976 
+L 1139 998 
+Q 1139 717 1264 585 
+Q 1389 454 1645 454 
+Q 1869 454 2115 608 
+Q 2362 762 2771 1152 
+L 2771 2976 
+L 3322 2976 
+z
+" transform="scale(0.015625)"/>
+       </defs>
+       <use xlink:href="#IntoneMonoNFM-29"/>
+       <use xlink:href="#IntoneMonoNFM-58" transform="translate(61.40625 0)"/>
+       <use xlink:href="#IntoneMonoNFM-4f" transform="translate(122.8125 0)"/>
+       <use xlink:href="#IntoneMonoNFM-4f" transform="translate(184.21875 0)"/>
+       <use xlink:href="#IntoneMonoNFM-3" transform="translate(245.625 0)"/>
+       <use xlink:href="#IntoneMonoNFM-29" transform="translate(307.03125 0)"/>
+       <use xlink:href="#IntoneMonoNFM-37" transform="translate(368.4375 0)"/>
+      </g>
+     </g>
+    </g>
+   </g>
+   <g id="matplotlib.axis_2">
+    <g id="ytick_1">
+     <g id="line2d_5">
+      <path d="M 26.072813 80.3 
+L 224.532 80.3 
+" clip-path="url(#p9b749df075)" style="fill: none; stroke: #bdc5d0; stroke-width: 0.4; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_6"/>
+     <g id="text_5">
+      <!-- 0 -->
+      <g transform="translate(19.581406 83.8425) scale(0.065 -0.065)">
+       <defs>
+        <path id="IntoneMonoNFM-13" d="M 1971 4288 
+Q 2701 4288 3101 3718 
+Q 3501 3149 3501 2106 
+Q 3501 1056 3097 480 
+Q 2694 -96 1958 -96 
+Q 1222 -96 825 467 
+Q 429 1030 429 2080 
+Q 429 3130 835 3709 
+Q 1242 4288 1971 4288 
+z
+M 1965 3814 
+Q 1472 3814 1222 3385 
+Q 973 2957 973 2093 
+Q 973 1933 979 1808 
+Q 986 1683 998 1574 
+L 2854 3008 
+Q 2746 3411 2522 3612 
+Q 2298 3814 1965 3814 
+z
+M 1965 378 
+Q 2458 378 2707 810 
+Q 2957 1242 2957 2093 
+Q 2957 2246 2950 2371 
+Q 2944 2496 2931 2598 
+L 1075 1165 
+Q 1190 774 1411 576 
+Q 1632 378 1965 378 
+z
+" transform="scale(0.015625)"/>
+       </defs>
+       <use xlink:href="#IntoneMonoNFM-13"/>
+      </g>
+     </g>
+    </g>
+    <g id="ytick_2">
+     <g id="line2d_7">
+      <path d="M 26.072813 59.831579 
+L 224.532 59.831579 
+" clip-path="url(#p9b749df075)" style="fill: none; stroke: #bdc5d0; stroke-width: 0.4; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_8"/>
+     <g id="text_6">
+      <!-- 10 -->
+      <g transform="translate(15.59 63.374079) scale(0.065 -0.065)">
+       <defs>
+        <path id="IntoneMonoNFM-14" d="M 3386 0 
+L 730 0 
+L 730 461 
+L 1805 461 
+L 1805 3488 
+L 723 2925 
+L 723 3494 
+L 2208 4262 
+L 2362 4262 
+L 2362 461 
+L 3386 461 
+L 3386 0 
+z
+" transform="scale(0.015625)"/>
+       </defs>
+       <use xlink:href="#IntoneMonoNFM-14"/>
+       <use xlink:href="#IntoneMonoNFM-13" transform="translate(61.40625 0)"/>
+      </g>
+     </g>
+    </g>
+    <g id="ytick_3">
+     <g id="line2d_9">
+      <path d="M 26.072813 39.363158 
+L 224.532 39.363158 
+" clip-path="url(#p9b749df075)" style="fill: none; stroke: #bdc5d0; stroke-width: 0.4; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_10"/>
+     <g id="text_7">
+      <!-- 20 -->
+      <g transform="translate(15.59 42.905658) scale(0.065 -0.065)">
+       <defs>
+        <path id="IntoneMonoNFM-15" d="M 3488 0 
+L 544 0 
+L 544 384 
+L 1894 1786 
+Q 2451 2362 2624 2614 
+Q 2797 2867 2797 3136 
+Q 2797 3450 2608 3632 
+Q 2419 3814 2080 3814 
+Q 1773 3814 1501 3660 
+Q 1229 3507 762 3066 
+L 454 3443 
+Q 941 3910 1305 4099 
+Q 1670 4288 2106 4288 
+Q 2669 4288 3017 3977 
+Q 3366 3667 3366 3155 
+Q 3366 2810 3171 2509 
+Q 2976 2208 2310 1530 
+L 1274 480 
+L 1274 461 
+L 3488 461 
+L 3488 0 
+z
+" transform="scale(0.015625)"/>
+       </defs>
+       <use xlink:href="#IntoneMonoNFM-15"/>
+       <use xlink:href="#IntoneMonoNFM-13" transform="translate(61.40625 0)"/>
+      </g>
+     </g>
+    </g>
+    <g id="ytick_4">
+     <g id="line2d_11">
+      <path d="M 26.072813 18.894737 
+L 224.532 18.894737 
+" clip-path="url(#p9b749df075)" style="fill: none; stroke: #bdc5d0; stroke-width: 0.4; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_12"/>
+     <g id="text_8">
+      <!-- 30 -->
+      <g transform="translate(15.59 22.437237) scale(0.065 -0.065)">
+       <defs>
+        <path id="IntoneMonoNFM-16" d="M 2496 3731 
+L 486 3731 
+L 486 4192 
+L 3238 4192 
+L 3238 3840 
+L 1984 2496 
+L 1984 2483 
+Q 2682 2483 3056 2188 
+Q 3430 1894 3430 1370 
+Q 3430 749 2918 403 
+Q 2406 58 1389 -13 
+L 627 -64 
+L 582 429 
+L 1350 486 
+Q 2125 544 2493 755 
+Q 2861 966 2861 1363 
+Q 2861 1709 2608 1881 
+Q 2355 2054 1850 2054 
+Q 1722 2054 1587 2041 
+Q 1453 2029 1286 2003 
+L 1184 2259 
+L 2496 3712 
+L 2496 3731 
+z
+" transform="scale(0.015625)"/>
+       </defs>
+       <use xlink:href="#IntoneMonoNFM-16"/>
+       <use xlink:href="#IntoneMonoNFM-13" transform="translate(61.40625 0)"/>
+      </g>
+     </g>
+    </g>
+    <g id="text_9">
+     <!-- Gap (pp) -->
+     <g transform="translate(11.415 59.831875) rotate(-90) scale(0.075 -0.075)">
+      <defs>
+       <path id="IntoneMonoNFM-Bold-2a" d="M 3258 4192 
+L 3181 3430 
+Q 3002 3456 2883 3465 
+Q 2765 3475 2643 3475 
+Q 1946 3475 1603 3132 
+Q 1261 2790 1261 2099 
+Q 1261 1331 1526 1001 
+Q 1792 672 2413 672 
+Q 2470 672 2537 678 
+Q 2605 685 2707 704 
+L 2707 1683 
+L 1978 1683 
+L 1978 2394 
+L 3578 2394 
+L 3578 83 
+Q 3238 -6 2918 -51 
+Q 2598 -96 2304 -96 
+Q 1312 -96 813 448 
+Q 314 992 314 2067 
+Q 314 3110 902 3683 
+Q 1491 4256 2566 4256 
+Q 2726 4256 2867 4243 
+Q 3008 4230 3258 4192 
+z
+" transform="scale(0.015625)"/>
+       <path id="IntoneMonoNFM-Bold-44" d="M 3322 2093 
+L 3322 954 
+Q 3322 787 3360 732 
+Q 3398 678 3514 672 
+L 3802 646 
+L 3725 -38 
+L 3206 -6 
+Q 2912 13 2742 93 
+Q 2573 173 2496 326 
+L 2419 326 
+Q 2176 134 1872 32 
+Q 1568 -70 1222 -70 
+Q 787 -70 534 170 
+Q 282 410 282 838 
+Q 282 1318 534 1539 
+Q 787 1760 1389 1824 
+L 2445 1926 
+L 2445 2074 
+Q 2445 2278 2310 2345 
+Q 2176 2413 1824 2413 
+Q 1658 2413 1363 2387 
+Q 1069 2362 685 2310 
+L 602 3040 
+Q 973 3085 1299 3110 
+Q 1626 3136 1869 3136 
+Q 2643 3136 2982 2896 
+Q 3322 2656 3322 2093 
+z
+M 1178 902 
+Q 1178 762 1264 682 
+Q 1350 602 1504 602 
+Q 1715 602 1945 694 
+Q 2176 787 2445 979 
+L 2445 1389 
+L 1632 1280 
+Q 1382 1248 1280 1165 
+Q 1178 1082 1178 902 
+z
+" transform="scale(0.015625)"/>
+       <path id="IntoneMonoNFM-Bold-53" d="M 1408 -1472 
+L 480 -1472 
+L 480 3053 
+L 1286 3053 
+L 1350 2650 
+Q 1581 2899 1824 3011 
+Q 2067 3123 2368 3123 
+Q 2925 3123 3286 2704 
+Q 3648 2285 3648 1600 
+Q 3648 890 3235 429 
+Q 2822 -32 2202 -32 
+Q 1952 -32 1766 35 
+Q 1581 102 1408 250 
+L 1408 -1472 
+z
+M 2688 1530 
+Q 2688 1920 2496 2141 
+Q 2304 2362 1965 2362 
+Q 1824 2362 1693 2314 
+Q 1562 2266 1408 2163 
+L 1408 851 
+Q 1523 781 1632 749 
+Q 1741 717 1856 717 
+Q 2234 717 2461 941 
+Q 2688 1165 2688 1530 
+z
+" transform="scale(0.015625)"/>
+       <path id="IntoneMonoNFM-Bold-3" transform="scale(0.015625)"/>
+       <path id="IntoneMonoNFM-Bold-b" d="M 627 2086 
+Q 627 2963 1241 3750 
+Q 1856 4538 3046 5178 
+L 3552 4595 
+Q 2528 4058 2048 3459 
+Q 1568 2861 1568 2106 
+Q 1568 1350 2048 752 
+Q 2528 154 3552 -384 
+L 3046 -966 
+Q 1856 -320 1241 451 
+Q 627 1222 627 2086 
+z
+" transform="scale(0.015625)"/>
+       <path id="IntoneMonoNFM-Bold-c" d="M 3302 2125 
+Q 3302 1248 2688 461 
+Q 2074 -326 883 -966 
+L 378 -384 
+Q 1402 154 1882 752 
+Q 2362 1350 2362 2106 
+Q 2362 2861 1882 3459 
+Q 1402 4058 378 4595 
+L 883 5178 
+Q 2074 4531 2688 3760 
+Q 3302 2989 3302 2125 
+z
+" transform="scale(0.015625)"/>
+      </defs>
+      <use xlink:href="#IntoneMonoNFM-Bold-2a"/>
+      <use xlink:href="#IntoneMonoNFM-Bold-44" transform="translate(61.40625 0)"/>
+      <use xlink:href="#IntoneMonoNFM-Bold-53" transform="translate(122.8125 0)"/>
+      <use xlink:href="#IntoneMonoNFM-Bold-3" transform="translate(184.21875 0)"/>
+      <use xlink:href="#IntoneMonoNFM-Bold-b" transform="translate(245.625 0)"/>
+      <use xlink:href="#IntoneMonoNFM-Bold-53" transform="translate(307.03125 0)"/>
+      <use xlink:href="#IntoneMonoNFM-Bold-53" transform="translate(368.4375 0)"/>
+      <use xlink:href="#IntoneMonoNFM-Bold-c" transform="translate(429.84375 0)"/>
+     </g>
+    </g>
+   </g>
+   <g id="patch_7">
+    <path d="M 26.072813 80.3 
+L 26.072813 2.52 
+" style="fill: none; stroke: #000000; stroke-width: 0.65; stroke-linejoin: miter; stroke-linecap: square"/>
+   </g>
+   <g id="patch_8">
+    <path d="M 224.532 80.3 
+L 224.532 2.52 
+" style="fill: none; stroke: #000000; stroke-width: 0.65; stroke-linejoin: miter; stroke-linecap: square"/>
+   </g>
+   <g id="patch_9">
+    <path d="M 26.072812 80.3 
+L 224.532 80.3 
+" style="fill: none; stroke: #000000; stroke-width: 0.65; stroke-linejoin: miter; stroke-linecap: square"/>
+   </g>
+   <g id="patch_10">
+    <path d="M 26.072812 2.52 
+L 224.532 2.52 
+" style="fill: none; stroke: #000000; stroke-width: 0.65; stroke-linejoin: miter; stroke-linecap: square"/>
+   </g>
+   <g id="patch_11">
+    <path d="M 33.652851 80.3 
+L 50.880211 80.3 
+L 50.880211 13.572947 
+L 33.652851 13.572947 
+z
+" clip-path="url(#p9b749df075)" style="fill: #3f6be2; stroke: #000000; stroke-width: 0.5; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_12">
+    <path d="M 83.267648 80.3 
+L 100.495008 80.3 
+L 100.495008 54.340841 
+L 83.267648 54.340841 
+z
+" clip-path="url(#p9b749df075)" style="fill: #3f6be2; stroke: #000000; stroke-width: 0.5; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_13">
+    <path d="M 132.882445 80.3 
+L 150.109805 80.3 
+L 150.109805 41.736308 
+L 132.882445 41.736308 
+z
+" clip-path="url(#p9b749df075)" style="fill: #3f6be2; stroke: #000000; stroke-width: 0.5; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_14">
+    <path d="M 182.497242 80.3 
+L 199.724602 80.3 
+L 199.724602 42.709199 
+L 182.497242 42.709199 
+z
+" clip-path="url(#p9b749df075)" style="fill: #3f6be2; stroke: #000000; stroke-width: 0.5; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_15">
+    <path d="M 50.880211 80.3 
+L 68.107571 80.3 
+L 68.107571 13.572947 
+L 50.880211 13.572947 
+z
+" clip-path="url(#p9b749df075)" style="fill: #cbd6f5; stroke: #000000; stroke-width: 0.5; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_16">
+    <path d="M 100.495008 80.3 
+L 117.722368 80.3 
+L 117.722368 51.006426 
+L 100.495008 51.006426 
+z
+" clip-path="url(#p9b749df075)" style="fill: #cbd6f5; stroke: #000000; stroke-width: 0.5; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_17">
+    <path d="M 150.109805 80.3 
+L 167.337165 80.3 
+L 167.337165 39.233376 
+L 150.109805 39.233376 
+z
+" clip-path="url(#p9b749df075)" style="fill: #cbd6f5; stroke: #000000; stroke-width: 0.5; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_18">
+    <path d="M 199.724602 80.3 
+L 216.951962 80.3 
+L 216.951962 39.604181 
+L 199.724602 39.604181 
+z
+" clip-path="url(#p9b749df075)" style="fill: #cbd6f5; stroke: #000000; stroke-width: 0.5; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_19">
+    <path d="M 33.652851 18.894737 
+L 50.880211 18.894737 
+L 50.880211 13.572947 
+L 33.652851 13.572947 
+z
+" clip-path="url(#p9b749df075)" style="fill: url(#hb0ffc27f59)"/>
+   </g>
+   <g id="patch_20">
+    <path d="M 50.880211 18.894737 
+L 68.107571 18.894737 
+L 68.107571 13.572947 
+L 50.880211 13.572947 
+z
+" clip-path="url(#p9b749df075)" style="fill: url(#hb0ffc27f59)"/>
+   </g>
+   <g id="text_10">
+    <!-- +82.5 -->
+    <g transform="translate(36.279422 11.041947) scale(0.039 -0.039)">
+     <defs>
+      <path id="IntoneMonoNFM-Bold-e" d="M 1542 1741 
+L 397 1741 
+L 397 2483 
+L 1542 2483 
+L 1542 3718 
+L 2381 3718 
+L 2381 2483 
+L 3533 2483 
+L 3533 1741 
+L 2381 1741 
+L 2381 506 
+L 1542 506 
+L 1542 1741 
+z
+" transform="scale(0.015625)"/>
+      <path id="IntoneMonoNFM-Bold-1b" d="M 3539 1114 
+Q 3539 570 3100 237 
+Q 2662 -96 1958 -96 
+Q 1261 -96 825 233 
+Q 390 563 390 1101 
+Q 390 1459 627 1731 
+Q 864 2003 1286 2138 
+L 1286 2170 
+Q 909 2291 704 2537 
+Q 499 2784 499 3117 
+Q 499 3648 908 3968 
+Q 1318 4288 1978 4288 
+Q 2630 4288 3030 3971 
+Q 3430 3654 3430 3130 
+Q 3430 2790 3222 2544 
+Q 3014 2298 2637 2170 
+L 2637 2138 
+Q 3059 2010 3299 1741 
+Q 3539 1472 3539 1114 
+z
+M 1370 2995 
+Q 1370 2733 1533 2582 
+Q 1696 2432 1965 2432 
+Q 2234 2432 2397 2589 
+Q 2560 2746 2560 3008 
+Q 2560 3277 2403 3430 
+Q 2246 3584 1971 3584 
+Q 1702 3584 1536 3424 
+Q 1370 3264 1370 2995 
+z
+M 1267 1222 
+Q 1267 941 1456 771 
+Q 1645 602 1965 602 
+Q 2278 602 2470 774 
+Q 2662 947 2662 1235 
+Q 2662 1517 2473 1680 
+Q 2285 1843 1965 1843 
+Q 1645 1843 1456 1673 
+Q 1267 1504 1267 1222 
+z
+" transform="scale(0.015625)"/>
+      <path id="IntoneMonoNFM-Bold-15" d="M 3578 0 
+L 454 0 
+L 454 717 
+L 1664 1862 
+Q 2125 2304 2313 2563 
+Q 2502 2822 2502 3066 
+Q 2502 3270 2380 3379 
+Q 2259 3488 2035 3488 
+Q 1798 3488 1548 3334 
+Q 1299 3181 838 2758 
+L 346 3379 
+Q 902 3885 1289 4086 
+Q 1677 4288 2099 4288 
+Q 2707 4288 3072 3968 
+Q 3437 3648 3437 3104 
+Q 3437 2714 3232 2397 
+Q 3027 2080 2502 1600 
+L 1619 794 
+L 1619 768 
+L 3578 768 
+L 3578 0 
+z
+" transform="scale(0.015625)"/>
+      <path id="IntoneMonoNFM-Bold-11" d="M 2752 602 
+Q 2752 262 2547 83 
+Q 2342 -96 1958 -96 
+Q 1568 -96 1373 77 
+Q 1178 250 1178 595 
+Q 1178 928 1382 1110 
+Q 1587 1293 1965 1293 
+Q 2368 1293 2560 1123 
+Q 2752 954 2752 602 
+z
+" transform="scale(0.015625)"/>
+      <path id="IntoneMonoNFM-Bold-18" d="M 2272 2707 
+Q 2803 2707 3136 2377 
+Q 3469 2048 3469 1504 
+Q 3469 819 2934 457 
+Q 2400 96 1254 0 
+L 512 -64 
+L 422 742 
+L 1184 813 
+Q 1926 877 2233 1040 
+Q 2541 1203 2541 1549 
+Q 2541 1766 2403 1888 
+Q 2266 2010 2016 2010 
+Q 1843 2010 1644 1949 
+Q 1446 1888 1242 1773 
+L 582 1901 
+L 563 1933 
+L 698 4192 
+L 3213 4192 
+L 3213 3424 
+L 1459 3424 
+L 1389 2470 
+Q 1581 2592 1801 2649 
+Q 2022 2707 2272 2707 
+z
+" transform="scale(0.015625)"/>
+     </defs>
+     <use xlink:href="#IntoneMonoNFM-Bold-e"/>
+     <use xlink:href="#IntoneMonoNFM-Bold-1b" transform="translate(61.40625 0)"/>
+     <use xlink:href="#IntoneMonoNFM-Bold-15" transform="translate(122.8125 0)"/>
+     <use xlink:href="#IntoneMonoNFM-Bold-11" transform="translate(184.21875 0)"/>
+     <use xlink:href="#IntoneMonoNFM-Bold-18" transform="translate(245.625 0)"/>
+    </g>
+   </g>
+   <g id="text_11">
+    <!-- +12.7 -->
+    <g transform="translate(85.894218 51.809841) scale(0.039 -0.039)">
+     <defs>
+      <path id="IntoneMonoNFM-e" d="M 1702 1869 
+L 448 1869 
+L 448 2323 
+L 1702 2323 
+L 1702 3629 
+L 2221 3629 
+L 2221 2323 
+L 3482 2323 
+L 3482 1869 
+L 2221 1869 
+L 2221 557 
+L 1702 557 
+L 1702 1869 
+z
+" transform="scale(0.015625)"/>
+      <path id="IntoneMonoNFM-11" d="M 2522 422 
+Q 2522 173 2378 38 
+Q 2234 -96 1965 -96 
+Q 1690 -96 1549 35 
+Q 1408 166 1408 416 
+Q 1408 666 1555 803 
+Q 1702 941 1965 941 
+Q 2240 941 2381 809 
+Q 2522 678 2522 422 
+z
+" transform="scale(0.015625)"/>
+      <path id="IntoneMonoNFM-1a" d="M 3405 3731 
+L 1632 0 
+L 973 0 
+L 973 13 
+L 2835 3674 
+L 2835 3712 
+L 378 3712 
+L 378 4192 
+L 3405 4192 
+L 3405 3731 
+z
+" transform="scale(0.015625)"/>
+     </defs>
+     <use xlink:href="#IntoneMonoNFM-e"/>
+     <use xlink:href="#IntoneMonoNFM-14" transform="translate(61.40625 0)"/>
+     <use xlink:href="#IntoneMonoNFM-15" transform="translate(122.8125 0)"/>
+     <use xlink:href="#IntoneMonoNFM-11" transform="translate(184.21875 0)"/>
+     <use xlink:href="#IntoneMonoNFM-1a" transform="translate(245.625 0)"/>
+    </g>
+   </g>
+   <g id="text_12">
+    <!-- +18.8 -->
+    <g transform="translate(135.509015 39.205308) scale(0.039 -0.039)">
+     <defs>
+      <path id="IntoneMonoNFM-1b" d="M 3443 1120 
+Q 3443 576 3030 240 
+Q 2618 -96 1958 -96 
+Q 1306 -96 896 237 
+Q 486 570 486 1107 
+Q 486 1472 742 1757 
+Q 998 2042 1434 2157 
+L 1434 2189 
+Q 1056 2304 835 2557 
+Q 614 2810 614 3136 
+Q 614 3648 995 3968 
+Q 1376 4288 1978 4288 
+Q 2573 4288 2944 3974 
+Q 3315 3661 3315 3149 
+Q 3315 2822 3097 2566 
+Q 2880 2310 2502 2189 
+L 2502 2157 
+Q 2931 2042 3187 1763 
+Q 3443 1485 3443 1120 
+z
+M 1165 3110 
+Q 1165 2790 1395 2579 
+Q 1626 2368 1971 2368 
+Q 2304 2368 2534 2582 
+Q 2765 2797 2765 3123 
+Q 2765 3450 2544 3648 
+Q 2323 3846 1965 3846 
+Q 1606 3846 1385 3644 
+Q 1165 3443 1165 3110 
+z
+M 1037 1133 
+Q 1037 781 1296 563 
+Q 1555 346 1971 346 
+Q 2381 346 2637 566 
+Q 2893 787 2893 1146 
+Q 2893 1498 2630 1725 
+Q 2368 1952 1965 1952 
+Q 1568 1952 1302 1721 
+Q 1037 1491 1037 1133 
+z
+" transform="scale(0.015625)"/>
+     </defs>
+     <use xlink:href="#IntoneMonoNFM-e"/>
+     <use xlink:href="#IntoneMonoNFM-14" transform="translate(61.40625 0)"/>
+     <use xlink:href="#IntoneMonoNFM-1b" transform="translate(122.8125 0)"/>
+     <use xlink:href="#IntoneMonoNFM-11" transform="translate(184.21875 0)"/>
+     <use xlink:href="#IntoneMonoNFM-1b" transform="translate(245.625 0)"/>
+    </g>
+   </g>
+   <g id="text_13">
+    <!-- +18.4 -->
+    <g transform="translate(185.123812 40.178199) scale(0.039 -0.039)">
+     <defs>
+      <path id="IntoneMonoNFM-17" d="M 2362 1120 
+L 339 1120 
+L 339 1517 
+L 2157 4192 
+L 2906 4192 
+L 2906 1568 
+L 3738 1568 
+L 3738 1120 
+L 2906 1120 
+L 2906 0 
+L 2362 0 
+L 2362 1120 
+z
+M 2406 1530 
+L 2406 3808 
+L 877 1562 
+L 877 1530 
+L 2406 1530 
+z
+" transform="scale(0.015625)"/>
+     </defs>
+     <use xlink:href="#IntoneMonoNFM-e"/>
+     <use xlink:href="#IntoneMonoNFM-14" transform="translate(61.40625 0)"/>
+     <use xlink:href="#IntoneMonoNFM-1b" transform="translate(122.8125 0)"/>
+     <use xlink:href="#IntoneMonoNFM-11" transform="translate(184.21875 0)"/>
+     <use xlink:href="#IntoneMonoNFM-17" transform="translate(245.625 0)"/>
+    </g>
+   </g>
+   <g id="text_14">
+    <!-- +83.6 -->
+    <g transform="translate(53.506782 11.041947) scale(0.039 -0.039)">
+     <defs>
+      <path id="IntoneMonoNFM-Bold-16" d="M 2176 3424 
+L 448 3424 
+L 448 4192 
+L 3315 4192 
+L 3315 3578 
+L 2317 2547 
+L 2317 2528 
+Q 2867 2483 3187 2179 
+Q 3507 1875 3507 1427 
+Q 3507 774 2976 416 
+Q 2445 58 1370 -13 
+L 570 -64 
+L 486 781 
+L 1274 838 
+Q 1958 890 2262 1030 
+Q 2566 1171 2566 1440 
+Q 2566 1645 2403 1750 
+Q 2240 1856 1933 1856 
+Q 1792 1856 1619 1837 
+Q 1446 1818 1242 1779 
+L 1050 2266 
+L 2176 3405 
+L 2176 3424 
+z
+" transform="scale(0.015625)"/>
+      <path id="IntoneMonoNFM-Bold-19" d="M 2182 2790 
+Q 2842 2790 3194 2425 
+Q 3546 2061 3546 1382 
+Q 3546 723 3094 313 
+Q 2643 -96 1920 -96 
+Q 1216 -96 803 323 
+Q 390 742 390 1427 
+Q 390 2029 656 2560 
+Q 922 3091 1517 3693 
+L 2010 4192 
+L 3194 4192 
+L 3200 4179 
+L 2317 3360 
+Q 2157 3213 2022 3059 
+Q 1888 2906 1773 2746 
+Q 1875 2765 1977 2777 
+Q 2080 2790 2182 2790 
+z
+M 1446 2118 
+Q 1382 1952 1350 1785 
+Q 1318 1619 1318 1453 
+Q 1318 1088 1484 870 
+Q 1651 653 1933 653 
+Q 2253 653 2429 848 
+Q 2605 1043 2605 1395 
+Q 2605 1779 2429 1974 
+Q 2253 2170 1907 2170 
+Q 1773 2170 1661 2157 
+Q 1549 2144 1446 2118 
+z
+" transform="scale(0.015625)"/>
+     </defs>
+     <use xlink:href="#IntoneMonoNFM-Bold-e"/>
+     <use xlink:href="#IntoneMonoNFM-Bold-1b" transform="translate(61.40625 0)"/>
+     <use xlink:href="#IntoneMonoNFM-Bold-16" transform="translate(122.8125 0)"/>
+     <use xlink:href="#IntoneMonoNFM-Bold-11" transform="translate(184.21875 0)"/>
+     <use xlink:href="#IntoneMonoNFM-Bold-19" transform="translate(245.625 0)"/>
+    </g>
+   </g>
+   <g id="text_15">
+    <!-- +14.3 -->
+    <g transform="translate(103.121578 48.475426) scale(0.039 -0.039)">
+     <use xlink:href="#IntoneMonoNFM-e"/>
+     <use xlink:href="#IntoneMonoNFM-14" transform="translate(61.40625 0)"/>
+     <use xlink:href="#IntoneMonoNFM-17" transform="translate(122.8125 0)"/>
+     <use xlink:href="#IntoneMonoNFM-11" transform="translate(184.21875 0)"/>
+     <use xlink:href="#IntoneMonoNFM-16" transform="translate(245.625 0)"/>
+    </g>
+   </g>
+   <g id="text_16">
+    <!-- +20.1 -->
+    <g transform="translate(152.736375 36.702376) scale(0.039 -0.039)">
+     <use xlink:href="#IntoneMonoNFM-e"/>
+     <use xlink:href="#IntoneMonoNFM-15" transform="translate(61.40625 0)"/>
+     <use xlink:href="#IntoneMonoNFM-13" transform="translate(122.8125 0)"/>
+     <use xlink:href="#IntoneMonoNFM-11" transform="translate(184.21875 0)"/>
+     <use xlink:href="#IntoneMonoNFM-14" transform="translate(245.625 0)"/>
+    </g>
+   </g>
+   <g id="text_17">
+    <!-- +19.9 -->
+    <g transform="translate(202.351172 37.073181) scale(0.039 -0.039)">
+     <defs>
+      <path id="IntoneMonoNFM-1c" d="M 3456 2739 
+Q 3456 2138 3206 1642 
+Q 2957 1146 2368 589 
+L 1747 0 
+L 986 0 
+L 979 13 
+L 1875 813 
+Q 2106 1018 2272 1206 
+Q 2438 1395 2554 1581 
+Q 2368 1523 2201 1494 
+Q 2035 1466 1856 1466 
+Q 1229 1466 854 1837 
+Q 480 2208 480 2829 
+Q 480 3475 909 3881 
+Q 1338 4288 2016 4288 
+Q 2650 4288 3053 3862 
+Q 3456 3437 3456 2739 
+z
+M 2771 2010 
+Q 2835 2182 2864 2355 
+Q 2893 2528 2893 2714 
+Q 2893 3219 2633 3526 
+Q 2374 3834 1965 3834 
+Q 1555 3834 1302 3552 
+Q 1050 3270 1050 2816 
+Q 1050 2387 1299 2137 
+Q 1549 1888 1984 1888 
+Q 2182 1888 2377 1917 
+Q 2573 1946 2771 2010 
+z
+" transform="scale(0.015625)"/>
+     </defs>
+     <use xlink:href="#IntoneMonoNFM-e"/>
+     <use xlink:href="#IntoneMonoNFM-14" transform="translate(61.40625 0)"/>
+     <use xlink:href="#IntoneMonoNFM-1c" transform="translate(122.8125 0)"/>
+     <use xlink:href="#IntoneMonoNFM-11" transform="translate(184.21875 0)"/>
+     <use xlink:href="#IntoneMonoNFM-1c" transform="translate(245.625 0)"/>
+    </g>
+   </g>
+   <g id="legend_1">
+    <g id="patch_21">
+     <path d="M 122.01075 14.116 
+L 221.152 14.116 
+Q 222.192 14.116 222.192 13.076 
+L 222.192 5.9 
+Q 222.192 4.86 221.152 4.86 
+L 122.01075 4.86 
+Q 120.97075 4.86 120.97075 5.9 
+L 120.97075 13.076 
+Q 120.97075 14.116 122.01075 14.116 
+z
+" style="fill: #ffffff; stroke: #c9cbc8; stroke-width: 0.5; stroke-linejoin: miter"/>
+    </g>
+    <g id="patch_22">
+     <path d="M 122.01075 11.568 
+L 126.43075 11.568 
+L 126.43075 7.928 
+L 122.01075 7.928 
+z
+" style="fill: #3f6be2; stroke: #000000; stroke-width: 0.5; stroke-linejoin: miter"/>
+    </g>
+    <g id="text_18">
+     <!-- Best val. epoch -->
+     <g transform="translate(128.51075 11.568) scale(0.052 -0.052)">
+      <defs>
+       <path id="IntoneMonoNFM-25" d="M 608 0 
+L 608 4192 
+L 2131 4192 
+Q 2758 4192 3081 3942 
+Q 3405 3693 3405 3213 
+Q 3405 2810 3158 2547 
+Q 2912 2285 2419 2163 
+L 2419 2138 
+Q 2995 2061 3302 1779 
+Q 3610 1498 3610 1043 
+Q 3610 531 3251 265 
+Q 2893 0 2195 0 
+L 608 0 
+z
+M 2842 3123 
+Q 2842 3437 2650 3597 
+Q 2458 3757 2080 3757 
+L 1152 3757 
+L 1152 2310 
+L 1792 2342 
+Q 2291 2368 2566 2576 
+Q 2842 2784 2842 3123 
+z
+M 3059 1101 
+Q 3059 1453 2764 1661 
+Q 2470 1869 1926 1888 
+L 1152 1920 
+L 1152 435 
+L 2189 435 
+Q 2611 435 2835 608 
+Q 3059 781 3059 1101 
+z
+" transform="scale(0.015625)"/>
+       <path id="IntoneMonoNFM-56" d="M 3341 832 
+Q 3341 403 2953 160 
+Q 2566 -83 1856 -83 
+Q 1542 -83 1238 -51 
+Q 934 -19 602 45 
+L 685 512 
+Q 998 448 1315 409 
+Q 1632 371 1862 371 
+Q 2330 371 2557 476 
+Q 2784 582 2784 794 
+Q 2784 966 2659 1059 
+Q 2534 1152 2214 1229 
+L 1658 1357 
+Q 1114 1491 896 1670 
+Q 678 1850 678 2208 
+Q 678 2624 1043 2841 
+Q 1408 3059 2112 3059 
+Q 2330 3059 2637 3027 
+Q 2944 2995 3219 2944 
+L 3142 2477 
+Q 2854 2541 2582 2576 
+Q 2310 2611 2106 2611 
+Q 1664 2611 1453 2524 
+Q 1242 2438 1242 2253 
+Q 1242 2086 1366 2000 
+Q 1491 1914 1805 1830 
+L 2355 1702 
+Q 2906 1574 3123 1388 
+Q 3341 1203 3341 832 
+z
+" transform="scale(0.015625)"/>
+       <path id="IntoneMonoNFM-59" d="M 1645 0 
+L 352 2976 
+L 966 2976 
+L 1978 493 
+L 2995 2976 
+L 3578 2976 
+L 2291 0 
+L 1645 0 
+z
+" transform="scale(0.015625)"/>
+       <path id="IntoneMonoNFM-53" d="M 1139 -1472 
+L 589 -1472 
+L 589 2976 
+L 1056 2976 
+L 1107 2458 
+Q 1389 2765 1648 2899 
+Q 1907 3034 2234 3034 
+Q 2797 3034 3174 2608 
+Q 3552 2182 3552 1523 
+Q 3552 845 3133 400 
+Q 2714 -45 2086 -45 
+Q 1818 -45 1590 51 
+Q 1363 147 1139 352 
+L 1139 -1472 
+z
+M 2989 1510 
+Q 2989 1978 2726 2278 
+Q 2464 2579 2074 2579 
+Q 1837 2579 1622 2457 
+Q 1408 2336 1139 2067 
+L 1139 787 
+Q 1350 595 1552 502 
+Q 1754 410 1958 410 
+Q 2426 410 2707 714 
+Q 2989 1018 2989 1510 
+z
+" transform="scale(0.015625)"/>
+      </defs>
+      <use xlink:href="#IntoneMonoNFM-25"/>
+      <use xlink:href="#IntoneMonoNFM-48" transform="translate(61.40625 0)"/>
+      <use xlink:href="#IntoneMonoNFM-56" transform="translate(122.8125 0)"/>
+      <use xlink:href="#IntoneMonoNFM-57" transform="translate(184.21875 0)"/>
+      <use xlink:href="#IntoneMonoNFM-3" transform="translate(245.625 0)"/>
+      <use xlink:href="#IntoneMonoNFM-59" transform="translate(307.03125 0)"/>
+      <use xlink:href="#IntoneMonoNFM-44" transform="translate(368.4375 0)"/>
+      <use xlink:href="#IntoneMonoNFM-4f" transform="translate(429.84375 0)"/>
+      <use xlink:href="#IntoneMonoNFM-11" transform="translate(491.25 0)"/>
+      <use xlink:href="#IntoneMonoNFM-3" transform="translate(552.65625 0)"/>
+      <use xlink:href="#IntoneMonoNFM-48" transform="translate(614.0625 0)"/>
+      <use xlink:href="#IntoneMonoNFM-53" transform="translate(675.46875 0)"/>
+      <use xlink:href="#IntoneMonoNFM-52" transform="translate(736.875 0)"/>
+      <use xlink:href="#IntoneMonoNFM-46" transform="translate(798.28125 0)"/>
+      <use xlink:href="#IntoneMonoNFM-4b" transform="translate(859.6875 0)"/>
+     </g>
+    </g>
+    <g id="patch_23">
+     <path d="M 179.527625 11.568 
+L 183.947625 11.568 
+L 183.947625 7.928 
+L 179.527625 7.928 
+z
+" style="fill: #cbd6f5; stroke: #000000; stroke-width: 0.5; stroke-linejoin: miter"/>
+    </g>
+    <g id="text_19">
+     <!-- Final epoch -->
+     <g transform="translate(186.027625 11.568) scale(0.052 -0.052)">
+      <use xlink:href="#IntoneMonoNFM-29"/>
+      <use xlink:href="#IntoneMonoNFM-4c" transform="translate(61.40625 0)"/>
+      <use xlink:href="#IntoneMonoNFM-51" transform="translate(122.8125 0)"/>
+      <use xlink:href="#IntoneMonoNFM-44" transform="translate(184.21875 0)"/>
+      <use xlink:href="#IntoneMonoNFM-4f" transform="translate(245.625 0)"/>
+      <use xlink:href="#IntoneMonoNFM-3" transform="translate(307.03125 0)"/>
+      <use xlink:href="#IntoneMonoNFM-48" transform="translate(368.4375 0)"/>
+      <use xlink:href="#IntoneMonoNFM-53" transform="translate(429.84375 0)"/>
+      <use xlink:href="#IntoneMonoNFM-52" transform="translate(491.25 0)"/>
+      <use xlink:href="#IntoneMonoNFM-46" transform="translate(552.65625 0)"/>
+      <use xlink:href="#IntoneMonoNFM-4b" transform="translate(614.0625 0)"/>
+     </g>
+    </g>
+   </g>
+  </g>
+ </g>
+ <defs>
+  <clipPath id="p9b749df075">
+   <rect x="26.072813" y="2.52" width="198.459187" height="77.78"/>
+  </clipPath>
+ </defs>
+ <defs>
+  <pattern id="hb0ffc27f59" patternUnits="userSpaceOnUse" x="0" y="0" width="72" height="72">
+   <rect x="0" y="0" width="73" height="73" fill="none"/>
+   <path d="M -36 36 
+L 36 -36 
+M -34.5 37.5 
+L 37.5 -34.5 
+M -33 39 
+L 39 -33 
+M -31.5 40.5 
+L 40.5 -31.5 
+M -30 42 
+L 42 -30 
+M -28.5 43.5 
+L 43.5 -28.5 
+M -27 45 
+L 45 -27 
+M -25.5 46.5 
+L 46.5 -25.5 
+M -24 48 
+L 48 -24 
+M -22.5 49.5 
+L 49.5 -22.5 
+M -21 51 
+L 51 -21 
+M -19.5 52.5 
+L 52.5 -19.5 
+M -18 54 
+L 54 -18 
+M -16.5 55.5 
+L 55.5 -16.5 
+M -15 57 
+L 57 -15 
+M -13.5 58.5 
+L 58.5 -13.5 
+M -12 60 
+L 60 -12 
+M -10.5 61.5 
+L 61.5 -10.5 
+M -9 63 
+L 63 -9 
+M -7.5 64.5 
+L 64.5 -7.5 
+M -6 66 
+L 66 -6 
+M -4.5 67.5 
+L 67.5 -4.5 
+M -3 69 
+L 69 -3 
+M -1.5 70.5 
+L 70.5 -1.5 
+M 0 72 
+L 72 0 
+M 1.5 73.5 
+L 73.5 1.5 
+M 3 75 
+L 75 3 
+M 4.5 76.5 
+L 76.5 4.5 
+M 6 78 
+L 78 6 
+M 7.5 79.5 
+L 79.5 7.5 
+M 9 81 
+L 81 9 
+M 10.5 82.5 
+L 82.5 10.5 
+M 12 84 
+L 84 12 
+M 13.5 85.5 
+L 85.5 13.5 
+M 15 87 
+L 87 15 
+M 16.5 88.5 
+L 88.5 16.5 
+M 18 90 
+L 90 18 
+M 19.5 91.5 
+L 91.5 19.5 
+M 21 93 
+L 93 21 
+M 22.5 94.5 
+L 94.5 22.5 
+M 24 96 
+L 96 24 
+M 25.5 97.5 
+L 97.5 25.5 
+M 27 99 
+L 99 27 
+M 28.5 100.5 
+L 100.5 28.5 
+M 30 102 
+L 102 30 
+M 31.5 103.5 
+L 103.5 31.5 
+M 33 105 
+L 105 33 
+M 34.5 106.5 
+L 106.5 34.5 
+M 36 108 
+L 108 36 
+" style="fill: #000000; stroke: #000000; stroke-width: 0.4; stroke-linecap: butt; stroke-linejoin: miter"/>
+  </pattern>
+ </defs>
+</svg>

@@ -22,11 +22,16 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
+from matplotlib.ticker import FixedLocator, ScalarFormatter
 import numpy as np
 import pandas as pd
-import seaborn as sns
 from sklearn.manifold import TSNE
 from sklearn.metrics import f1_score, silhouette_score
+
+if __package__:
+    from . import plot_style
+else:
+    import plot_style
 
 STRATEGY_ORDER = ["scratch", "frozen", "partial_ft", "full_ft"]
 STRATEGY_LABELS = {
@@ -41,11 +46,22 @@ STRATEGY_SHORT = {
     "partial_ft": "Partial FT",
     "full_ft": "Full FT",
 }
-STRATEGY_COLORS = {
-    "scratch": "#D62728",     # Red
-    "frozen": "#1F77B4",      # Blue
-    "partial_ft": "#FF7F0E",  # Orange
-    "full_ft": "#2CA02C",     # Green
+BREED_SHORT = {
+    "American Bulldog": "Amer. Bulldog",
+    "American Pit Bull Terrier": "Amer. Pit Bull",
+    "British Shorthair": "Brit. Shorth.",
+    "English Cocker Spaniel": "Eng. Cocker",
+    "German Shorthaired": "Ger. Shorth.",
+    "Great Pyrenees": "Gr. Pyrenees",
+    "Miniature Pinscher": "Mini Pinscher",
+    "Staffordshire Bull Terrier": "Staff. Bull T.",
+    "Wheaten Terrier": "Wheaten Terr.",
+    "Yorkshire Terrier": "Yorkshire T.",
+}
+BACKBONE_LABELS = {
+    "resnet18": "ResNet-18",
+    "mobilenet_v3_small": "MobileNetV3-Small",
+    "efficientnet_b0": "EfficientNet-B0",
 }
 
 CAT_BREEDS_NORMALIZED = {
@@ -64,12 +80,6 @@ CAT_BREEDS_NORMALIZED = {
 }
 
 ALL_FIGURE_KEYS = ("fig1", "fig2", "fig3", "fig4", "fig5", "fig6", "fig7", "fig8")
-
-sns.set_theme(style="whitegrid", context="paper", font_scale=1.15)
-plt.rcParams["figure.dpi"] = 150
-plt.rcParams["savefig.dpi"] = 300
-plt.rcParams["axes.spines.top"] = False
-plt.rcParams["axes.spines.right"] = False
 
 
 def _ensure_dir(path: Path | str) -> Path:
@@ -226,6 +236,7 @@ def build_species_f1_table(output_dir: Path, tables_dir: Path) -> pd.DataFrame:
     return sp_df
 
 
+@plot_style.paper_style(two_columns=True)
 def plot_fig1_eda(eda_path: Path, fig_dir: Path) -> None:
     """Fig. 1 (Req 1): Oxford-IIIT Pet per-breed class distribution & split summary."""
     if not eda_path.exists():
@@ -234,169 +245,199 @@ def plot_fig1_eda(eda_path: Path, fig_dir: Path) -> None:
     eda = _load_json(eda_path)
     pc = pd.DataFrame(eda["per_class"]).sort_values(["species", "train_100"], ascending=[True, False])
 
-    fig, (ax1, ax2) = plt.subplots(
-        1, 2, figsize=(15, 5.6), gridspec_kw={"width_ratios": [3.2, 1.1]}
+    fig, ax1 = plt.subplots(
+        figsize=plot_style.print_size(2.10, width_fraction=0.72, two_columns=True),
+        layout="constrained",
     )
 
-    colors = ["#E69F00" if s == "Cat" else "#56B4E9" for s in pc["species"]]
     x = np.arange(len(pc))
-    ax1.bar(x, pc["train_100"], color=colors, alpha=0.88, label="Train 100% (~80/class)")
-    ax1.bar(x, pc["train_10"], color="#222222", alpha=0.88, width=0.52, label="Train 10% (~8/class)")
-    ax1.set_xticks(x)
-    ax1.set_xticklabels(pc["class_name"], rotation=75, ha="right", fontsize=7.5)
-    ax1.set_ylabel("Number of Training Images")
-    ax1.set_ylim(0, 96)
-    ax1.set_title(
-        f"Oxford-IIIT Pet Per-Breed Training Distribution "
-        f"({eda['num_cat_breeds']} Cat Breeds in Orange, {eda['num_dog_breeds']} Dog Breeds in Blue)"
+    species = pc["species"].to_numpy()
+    light_colors = {"Cat": "#FFF1AA", "Dog": "#CBDAFA"}
+    for name, background in zip(("Cat", "Dog"), plot_style.GROUP_BACKGROUNDS):
+        positions = x[species == name]
+        if positions.size:
+            left = -0.9 if name == "Cat" else positions[0] - 0.5
+            right = len(pc) - 0.1 if name == "Dog" else positions[-1] + 0.5
+            ax1.axvspan(left, right, color=background, lw=0)
+            ax1.text(np.mean(positions), 91, f"{name} ({len(positions)})",
+                     color="#465771", fontweight="bold", ha="center", va="center")
+    ax1.bar(x, pc["train_100"], color=[plot_style.SPECIES_COLORS[name] for name in species],
+            edgecolor="black", linewidth=0.45, width=0.84, zorder=3)
+    ax1.bar(x, pc["train_10"], color=[light_colors[name] for name in species],
+            edgecolor="black", linewidth=0.45, width=0.84, zorder=4)
+    ax1.set_xticks(x, [BREED_SHORT.get(name, name) for name in pc["class_name"]],
+                   rotation=55, ha="right", rotation_mode="anchor", fontsize=4.6)
+    ax1.set_ylabel("Training images", labelpad=2)
+    ax1.set(xlim=(-0.9, len(pc) - 0.1), ylim=(0, 100), yticks=[0, 20, 40, 60, 80])
+    plot_style.style_axes(ax1, grid="y")
+    ax1.tick_params(axis="x", pad=1.5)
+    ax1.tick_params(axis="y", pad=2.5)
+
+    fig.legend(
+        handles=[plot_style.legend_swatch(color, label) for color, label in (
+            (plot_style.SPECIES_COLORS["Cat"], "Cat (Full)"),
+            (light_colors["Cat"], "Cat (Sub)"),
+            (plot_style.SPECIES_COLORS["Dog"], "Dog (Full)"),
+            (light_colors["Dog"], "Dog (Sub)"),
+        )],
+        loc="outside upper center", ncol=4, fontsize=5.5,
+        handlelength=0.9, columnspacing=0.7, borderpad=0.22,
     )
-    ax1.legend(loc="upper right", ncol=2, frameon=True)
 
-    splits = eda["splits"]
-    split_names = ["Train\n(10%)", "Train\n(100%)", "Val\n(Fixed)", "Test\n(Official)"]
-    split_vals = [splits["train_10"], splits["train_100"], splits["val"], splits["test"]]
-    bar_cols = ["#222222", "#1F77B4", "#2CA02C", "#9467BD"]
-    bars = ax2.bar(split_names, split_vals, color=bar_cols, alpha=0.9)
-    for b, v in zip(bars, split_vals):
-        ax2.text(
-            b.get_x() + b.get_width() / 2,
-            v + 70,
-            f"{v:,}",
-            ha="center",
-            va="bottom",
-            fontsize=9.5,
-            fontweight="bold",
-        )
-    ax2.set_ylabel("Images")
-    ax2.set_title("Dataset Split Summary")
-    ax2.set_ylim(0, max(split_vals) * 1.15)
-
-    plt.tight_layout()
-    plt.savefig(fig_dir / "fig1_eda_class_distribution.png", bbox_inches="tight")
+    plot_style.save_figure(fig, fig_dir / "fig1_eda_class_distribution")
     plt.close(fig)
 
 
+@plot_style.paper_style()
 def plot_fig2_model_comparison_10pct(summary: pd.DataFrame, fig_dir: Path) -> None:
     """Fig. 2 (Req 2): 10% subset strategy comparison on ResNet-18 (3-seed mean ± std)."""
     sub = summary[(summary["backbone"] == "resnet18") & (summary["fraction_pct"] == 10)].copy()
     if sub.empty:
         return
-    strategies = [s for s in STRATEGY_ORDER if s in set(sub["strategy"])]
-    sub = sub.set_index("strategy").loc[strategies].reset_index()
+    present = set(sub["strategy"])
+    strategies = [strategy for strategy in STRATEGY_ORDER if strategy in present]
+    sub = sub.set_index("strategy").loc[strategies]
 
-    fig, ax = plt.subplots(figsize=(9, 5.2))
-    x = np.arange(len(sub))
-    w = 0.34
+    fig, ax = plt.subplots(
+        figsize=plot_style.print_size(1.64, width_fraction=0.86), layout="constrained",
+    )
+    x = np.arange(len(strategies))
+    width = 0.36
+    f1_hatch = "////"
+    backgrounds = dict(zip(STRATEGY_ORDER, plot_style.GROUP_BACKGROUNDS))
+    plot_style.group_bands(ax, x, [backgrounds[strategy] for strategy in strategies])
+    plot_style.style_axes(ax, grid="y")
+    ax.tick_params(axis="both", pad=2.5)
+    for metric, offset, palette, hatch in (
+        ("test_acc", -width / 2, plot_style.STRATEGY_COLORS, None),
+        ("test_f1", width / 2, plot_style.STRATEGY_LIGHT_COLORS, f1_hatch),
+    ):
+        means = sub[f"{metric}_mean"].to_numpy() * 100
+        std = sub[f"{metric}_std"].to_numpy() * 100
+        positions = x + offset
+        ax.bar(
+            positions, means, width, color=[palette[strategy] for strategy in strategies],
+            edgecolor="black", linewidth=plot_style.MARK_EDGE_WIDTH, hatch=hatch, zorder=3,
+        )
+        plot_style.error_bars(ax, positions, means, std)
+        for position, mean, deviation in zip(positions, means, np.nan_to_num(std)):
+            ax.text(position, mean + deviation + 1.8, f"{mean:.1f}",
+                    ha="center", va="bottom", fontsize=4.8)
 
-    acc_m = sub["test_acc_mean"].values * 100
-    acc_s = sub["test_acc_std"].fillna(0).values * 100
-    f1_m = sub["test_f1_mean"].values * 100
-    f1_s = sub["test_f1_std"].fillna(0).values * 100
-
-    b1 = ax.bar(x - w / 2, acc_m, w, yerr=acc_s, capsize=4, label="Test Accuracy (%)", color="#1F77B4", alpha=0.9)
-    b2 = ax.bar(x + w / 2, f1_m, w, yerr=f1_s, capsize=4, label="Test Macro-F1 (%)", color="#FF7F0E", alpha=0.9)
-
-    for bars, vals, errs in ((b1, acc_m, acc_s), (b2, f1_m, f1_s)):
-        for bar, v, e in zip(bars, vals, errs):
-            ax.text(
-                bar.get_x() + bar.get_width() / 2,
-                v + e + 1.2,
-                f"{v:.1f}%",
-                ha="center",
-                va="bottom",
-                fontsize=9,
-                fontweight="bold",
-            )
-
-    ax.set_xticks(x)
-    ax.set_xticklabels([STRATEGY_LABELS[s] for s in strategies], fontsize=10)
-    ax.set_ylabel("Score (%)")
-    ax.set_ylim(0, 105)
-    ax.set_title("ResNet-18 Performance on 10% Labeled Data (~8 imgs/class, Mean ± Std)")
-    ax.legend(loc="upper left")
-
-    plt.tight_layout()
-    plt.savefig(fig_dir / "fig2_model_comparison_10pct.png", bbox_inches="tight")
+    ax.set_xticks(x, [STRATEGY_SHORT[strategy] for strategy in strategies], fontsize=6)
+    ax.set_xlim(-0.5, len(x) - 0.5)
+    ax.set_ylabel("Score (%)", labelpad=2)
+    ax.set_ylim(0, 100)
+    ax.set_yticks([0, 25, 50, 75, 100])
+    ax.legend(
+        handles=[
+            plot_style.legend_swatch(plot_style.STRATEGY_COLORS["scratch"], "Accuracy"),
+            plot_style.legend_swatch(plot_style.STRATEGY_LIGHT_COLORS["scratch"], "Macro-F1",
+                                    hatch=f1_hatch),
+        ],
+        loc="upper left", ncol=1, fontsize=5.3, handlelength=0.85,
+        borderpad=0.22, labelspacing=0.22,
+    )
+    plot_style.save_figure(fig, fig_dir / "fig2_model_comparison_10pct")
     plt.close(fig)
 
 
+@plot_style.paper_style(two_columns=True)
 def plot_fig3_data_efficiency(summary: pd.DataFrame, fig_dir: Path) -> None:
     """Fig. 3 (Req 3 + Extension): Data Efficiency Curve (5%–100%) & 10% vs 100% bars."""
     sub = summary[summary["backbone"] == "resnet18"].copy()
     if sub.empty:
         return
 
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(13.5, 5.2))
+    fig, (ax1, ax2) = plt.subplots(
+        1, 2, figsize=plot_style.print_size(2.08, width_fraction=0.78, two_columns=True),
+        layout="constrained",
+    )
+    fractions = sorted(sub["fraction_pct"].unique())
+    positions = {fraction: index for index, fraction in enumerate(fractions)}
 
+    strat_markers = {"scratch": "s", "frozen": "o", "partial_ft": "^", "full_ft": "D"}
+    strat_styles = {"scratch": "-", "frozen": "-", "partial_ft": "--", "full_ft": ":"}
+    strat_sizes = {"scratch": 3.0, "frozen": 3.6, "partial_ft": 3.4, "full_ft": 2.9}
     for strat in STRATEGY_ORDER:
         s_df = sub[sub["strategy"] == strat].sort_values("fraction_pct")
         if s_df.empty:
             continue
-        x = s_df["fraction_pct"].values
-        y = s_df["test_f1_mean"].values * 100
-        yerr = s_df["test_f1_std"].fillna(0).values * 100
-        ax1.errorbar(
-            x,
-            y,
-            yerr=yerr,
-            marker="o",
-            linewidth=2.2,
-            markersize=6.5,
-            capsize=3.5,
-            color=STRATEGY_COLORS[strat],
-            label=STRATEGY_LABELS[strat],
-        )
+        x = s_df["fraction_pct"].map(positions).to_numpy()
+        y = s_df["test_f1_mean"].to_numpy() * 100
+        repeated = s_df["n_seeds"].to_numpy() > 1
+        color = plot_style.STRATEGY_COLORS[strat]
+        marker = strat_markers[strat]
+        linestyle = strat_styles[strat]
+        ms = strat_sizes[strat]
+        ax1.plot(x, y, color=color, linestyle=linestyle, label=STRATEGY_SHORT[strat])
+        plot_style.error_bars(ax1, x[repeated], y[repeated],
+                              s_df["test_f1_std"].to_numpy()[repeated] * 100)
+        for mask, facecolor in ((repeated, color), (~repeated, "white")):
+            ax1.plot(x[mask], y[mask], linestyle="none", marker=marker, markersize=ms,
+                     markerfacecolor=facecolor, markeredgecolor=color, markeredgewidth=0.9,
+                     zorder=5)
 
-    ax1.set_xlabel("Labeled Training Data (%)")
-    ax1.set_ylabel("Test Macro-F1 (%)")
-    ax1.set_xticks(sorted(sub["fraction_pct"].unique()))
-    ax1.set_ylim(0, 100)
-    ax1.set_title("Data Efficiency Curve (ResNet-18)")
-    ax1.legend(loc="lower right")
+    ax1.set_xlabel("Labeled training data (%)", labelpad=1.5)
+    ax1.set_ylabel("Test Macro-F1 (%)", labelpad=1.5)
+    ax1.set_xticks(range(len(fractions)), fractions)
+    ax1.set(xlim=(-0.22, len(fractions) - 0.78), ylim=(0, 100), yticks=[0, 25, 50, 75, 100])
+    plot_style.style_axes(ax1)
+    ax1.tick_params(axis="both", pad=2.5)
+    seed_handles = [
+        Line2D([], [], linestyle="none", marker="o", markersize=3.2,
+               markerfacecolor=facecolor, markeredgecolor="black", label=label)
+        for facecolor, label in (("white", "1 seed"), ("black", "3 seeds"))
+    ]
+    strat_line_handles = [
+        Line2D([], [], color=plot_style.STRATEGY_COLORS[s], linestyle=strat_styles[s],
+               marker=strat_markers[s], markersize=3.0, label=STRATEGY_SHORT[s])
+        for s in STRATEGY_ORDER if not sub[sub["strategy"] == s].empty
+    ]
+    ax1.legend(handles=[*strat_line_handles, *seed_handles],
+               loc="center left", bbox_to_anchor=(0.02, 0.48), ncol=2,
+               fontsize=5.2, columnspacing=0.6, handletextpad=0.35)
 
     comp = sub[sub["fraction_pct"].isin([10, 100])].copy()
     strategies = [s for s in STRATEGY_ORDER if s in set(comp["strategy"])]
     x = np.arange(len(strategies))
-    w = 0.34
+    width = 0.38
+    gap = 0.0
+    backgrounds = dict(zip(STRATEGY_ORDER, plot_style.GROUP_BACKGROUNDS))
+    plot_style.group_bands(ax2, x, [backgrounds[strategy] for strategy in strategies])
+    handles = []
+    for fraction, offset, bar_color in (
+        (10, -(width + gap) / 2, "#87A1EB"),
+        (100, (width + gap) / 2, "#1843BA"),
+    ):
+        rows = comp[comp["fraction_pct"] == fraction].set_index("strategy").reindex(strategies)
+        values = rows["test_acc_mean"].to_numpy() * 100
+        std = rows["test_acc_std"].to_numpy() * 100
+        ax2.bar(x + offset, values, width, color=bar_color,
+                edgecolor="black", zorder=3)
+        plot_style.error_bars(ax2, x + offset, values, std)
+        for position, value, deviation in zip(x + offset, values, np.nan_to_num(std)):
+            if np.isfinite(value):
+                ax2.annotate(f"{value:.1f}", (position, value + deviation), xytext=(0, 2),
+                             textcoords="offset points", ha="center", va="bottom", fontsize=5.0)
+        handles.append(plot_style.legend_swatch(bar_color, f"{fraction}% data"))
 
-    vals_10, err_10, vals_100, err_100 = [], [], [], []
-    for s in strategies:
-        r10 = comp[(comp["strategy"] == s) & (comp["fraction_pct"] == 10)]
-        r100 = comp[(comp["strategy"] == s) & (comp["fraction_pct"] == 100)]
-        vals_10.append(r10["test_acc_mean"].values[0] * 100 if len(r10) else np.nan)
-        err_10.append(r10["test_acc_std"].fillna(0).values[0] * 100 if len(r10) else 0.0)
-        vals_100.append(r100["test_acc_mean"].values[0] * 100 if len(r100) else np.nan)
-        err_100.append(r100["test_acc_std"].fillna(0).values[0] * 100 if len(r100) else 0.0)
+    ax2.set_xticks(x, [STRATEGY_SHORT[s] for s in strategies], fontsize=6)
+    ax2.set_xlabel("Fine-tuning strategy", labelpad=1.5)
+    ax2.set_ylabel("Test Accuracy (%)", labelpad=1.5)
+    ax2.set(xlim=(-0.5, max(0.5, len(x) - 0.5)), ylim=(0, 100), yticks=[0, 25, 50, 75, 100])
+    plot_style.style_axes(ax2, grid="y")
+    ax2.tick_params(axis="both", pad=2.5)
+    ax2.legend(handles=handles, loc="upper left", ncol=1, fontsize=5.3,
+               borderpad=0.22, labelspacing=0.22)
 
-    b1 = ax2.bar(x - w / 2, vals_10, w, yerr=err_10, capsize=4, label="10% Data", color="#6BAED6")
-    b2 = ax2.bar(x + w / 2, vals_100, w, yerr=err_100, capsize=4, label="100% Data", color="#08519C")
-    for bars, vals, errs in ((b1, vals_10, err_10), (b2, vals_100, err_100)):
-        for bar, v, e in zip(bars, vals, errs):
-            if not np.isnan(v):
-                ax2.text(
-                    bar.get_x() + bar.get_width() / 2,
-                    v + e + 1.2,
-                    f"{v:.1f}%",
-                    ha="center",
-                    va="bottom",
-                    fontsize=8.5,
-                    fontweight="bold",
-                )
-
-    ax2.set_xticks(x)
-    ax2.set_xticklabels([STRATEGY_SHORT[s] for s in strategies])
-    ax2.set_ylabel("Test Accuracy (%)")
-    ax2.set_ylim(0, 105)
-    ax2.set_title("Effect of 10× More Labeled Data (10% vs. 100%)")
-    ax2.legend(loc="upper left")
-
-    plt.tight_layout()
-    plt.savefig(fig_dir / "fig3_data_efficiency_curve.png", bbox_inches="tight")
+    plot_style.save_figure(fig, fig_dir / "fig3_data_efficiency_curve")
     plt.close(fig)
 
 
+@plot_style.paper_style(two_columns=True)
 def plot_fig4_generalization(output_dir: Path, summary: pd.DataFrame, fig_dir: Path) -> None:
-    """Fig. 4 (Req 4): Train vs. Val learning curves + Generalization Gap bar chart."""
+    """Fig. 4a & 4b: 2x2 learning curves and Generalization Gap bar chart."""
     strategies = [
         s
         for s in STRATEGY_ORDER
@@ -405,69 +446,106 @@ def plot_fig4_generalization(output_dir: Path, summary: pd.DataFrame, fig_dir: P
     if not strategies:
         return
 
-    n = len(strategies)
-    fig = plt.figure(figsize=(4.3 * n, 7.6))
-    gs = fig.add_gridspec(2, n, height_ratios=[1.2, 1.0], hspace=0.38, wspace=0.25)
-
-    for i, strat in enumerate(strategies):
+    # Fig. 4a: 2x2 four-panel learning curves with single-row 6-item legend, no titles, unified xticks
+    fig_a, axes_a = plt.subplots(
+        2, 2, figsize=plot_style.print_size(2.15, width_fraction=0.72, two_columns=True),
+        sharey=True, layout="constrained",
+    )
+    for i, (ax, strat) in enumerate(zip(axes_a.flat, strategies)):
         hist = pd.read_csv(output_dir / "resnet18" / f"{strat}_f010_s42" / "history.csv")
-        ax = fig.add_subplot(gs[0, i])
-        ax.plot(hist["epoch"], hist["train_acc"] * 100, "--", lw=2, color=STRATEGY_COLORS[strat], label="Train Acc")
-        ax.plot(hist["epoch"], hist["val_acc"] * 100, "-", lw=2.2, color=STRATEGY_COLORS[strat], label="Val Acc")
-        ax.fill_between(
-            hist["epoch"],
-            hist["val_acc"] * 100,
-            hist["train_acc"] * 100,
-            color=STRATEGY_COLORS[strat],
-            alpha=0.12,
-        )
-        ax.set_title(f"{STRATEGY_SHORT[strat]} (10% Data)")
-        ax.set_xlabel("Epoch")
-        if i == 0:
-            ax.set_ylabel("Accuracy (%)")
-        ax.set_ylim(0, 105)
-        ax.legend(loc="lower right", fontsize=8.5)
+        color = plot_style.STRATEGY_COLORS[strat]
+        ax.plot(hist["epoch"], hist["train_acc"] * 100, "--", color=color)
+        ax.plot(hist["epoch"], hist["val_acc"] * 100, "-", color=color)
+        row, col = divmod(i, 2)
+        if row == 1:
+            ax.set_xlabel("Epoch", labelpad=1.5)
+        if strat != "scratch":
+            ax.set_xlim(0, 21)
+            ax.set_xticks([5, 10, 15, 20])
+        ax.set(ylim=(0, 105), yticks=[0, 25, 50, 75, 100])
+        plot_style.style_axes(ax)
+        ax.tick_params(axis="x", pad=2.5)
+        ax.tick_params(axis="y", labelleft=(col == 0), pad=2.5)
+    fig_a.supylabel("Accuracy (%)", fontsize=8, fontweight="bold")
+    strat_handles = [
+        plot_style.legend_swatch(plot_style.STRATEGY_COLORS[s], STRATEGY_SHORT[s])
+        for s in strategies
+    ]
+    line_handles = [
+        Line2D([], [], color="black", linestyle=linestyle, label=label)
+        for linestyle, label in (("--", "Train"), ("-", "Validation"))
+    ]
+    fig_a.get_layout_engine().set(h_pad=0.015)
+    fig_a.legend(
+        handles=[*strat_handles, *line_handles],
+        loc="outside upper center", ncol=6, fontsize=5.0,
+        handlelength=1.1, columnspacing=0.5, borderpad=0.20, borderaxespad=0.05,
+    )
+    plot_style.save_figure(fig_a, fig_dir / "fig4a_generalization_curves")
+    plt.close(fig_a)
 
-    ax_gap = fig.add_subplot(gs[1, :])
+    # Fig. 4b: Generalization Gap bar chart (2 unified bar colors, clear pair gap, tighter group spacing)
     sub10 = summary[(summary["backbone"] == "resnet18") & (summary["fraction_pct"] == 10)].copy()
     sub10 = sub10.set_index("strategy").loc[[s for s in STRATEGY_ORDER if s in set(sub10["strategy"])]].reset_index()
 
-    x = np.arange(len(sub10))
-    w = 0.34
-    gap_best = sub10["gen_gap_best_mean"].values * 100
-    gap_final = sub10["gen_gap_final_mean"].values * 100
+    with plot_style.paper_style(two_columns=False):
+        fig_b, ax_gap = plt.subplots(
+            figsize=plot_style.print_size(1.30, width_fraction=0.95),
+            layout="constrained",
+        )
+        step = 0.72
+        x = np.arange(len(sub10)) * step
+        width = 0.25
+        gap = 0.0
+        cutoff = 30
+        cap_h = 2.6
+        backgrounds = dict(zip(STRATEGY_ORDER, plot_style.GROUP_BACKGROUNDS))
+        for center, strategy in zip(x, sub10["strategy"]):
+            ax_gap.axvspan(center - step / 2, center + step / 2,
+                           color=backgrounds[strategy], linewidth=0, zorder=0)
+        handles = []
+        for metric, offset, bar_color, label in (
+            ("gen_gap_best_mean", -(width + gap) / 2, "#3F6BE2", "Best val. epoch"),
+            ("gen_gap_final_mean", (width + gap) / 2, "#cbd6f5", "Final epoch"),
+        ):
+            values = sub10[metric].to_numpy() * 100
+            heights = [cutoff + cap_h if (np.isfinite(v) and v > cutoff) else v for v in values]
+            ax_gap.bar(x + offset, heights, width, color=bar_color, edgecolor="black", zorder=3)
+            for position, value in zip(x + offset, values):
+                if not np.isfinite(value):
+                    continue
+                truncated = value > cutoff
+                top_y = cutoff + cap_h if truncated else value
+                if truncated:
+                    ax_gap.bar(position, cap_h, width, bottom=cutoff, color="none",
+                               edgecolor="black", linewidth=0, hatch="////////", zorder=4)
+                ax_gap.annotate(f"{value:+.1f}", (position, top_y),
+                                xytext=(0, 1.4 if value >= 0 else -1.4), textcoords="offset points",
+                                ha="center", va="bottom" if value >= 0 else "top", fontsize=3.9,
+                                fontweight="bold" if truncated else "normal", zorder=5)
+            handles.append(plot_style.legend_swatch(bar_color, label))
+        lower = min(0, sub10[["gen_gap_best_mean", "gen_gap_final_mean"]].min().min() * 100 - 4)
+        ax_gap.set_xticks(x, [STRATEGY_SHORT[s] for s in sub10["strategy"]], fontsize=6)
+        ax_gap.set(xlim=(-step / 2, x[-1] + step / 2), ylim=(lower, 38),
+                   yticks=[0, 10, 20, 30])
+        ax_gap.set_ylabel("Gap (pp)", labelpad=2)
+        plot_style.style_axes(ax_gap, grid="y")
+        ax_gap.tick_params(pad=2.5)
+        ax_gap.legend(handles=handles, loc="upper right", ncol=2, fontsize=5.2,
+                      handlelength=0.85, columnspacing=0.6, borderpad=0.2, labelspacing=0.2)
 
-    b1 = ax_gap.bar(x - w / 2, gap_best, w, label="Gap at Best Val Epoch", color="#4C72B0")
-    b2 = ax_gap.bar(x + w / 2, gap_final, w, label="Gap at Final Epoch", color="#DD8452")
-    for bars, vals in ((b1, gap_best), (b2, gap_final)):
-        for bar, v in zip(bars, vals):
-            ax_gap.text(
-                bar.get_x() + bar.get_width() / 2,
-                v + (1.0 if v >= 0 else -3.0),
-                f"{v:+.1f}%",
-                ha="center",
-                va="bottom",
-                fontsize=9,
-                fontweight="bold",
-            )
-    ax_gap.axhline(0, color="black", lw=0.8)
-    ax_gap.set_xticks(x)
-    ax_gap.set_xticklabels([STRATEGY_LABELS[s] for s in sub10["strategy"]])
-    ax_gap.set_ylabel("Train Acc − Val Acc (%)")
-    ax_gap.set_title("Overfitting Quantification: Generalization Gap on 10% Data (Lower = Better Generalization)")
-    ax_gap.legend(loc="upper right")
-
-    plt.savefig(fig_dir / "fig4_generalization_curves_and_gap.png", bbox_inches="tight")
-    plt.close(fig)
+        plot_style.save_figure(fig_b, fig_dir / "fig4b_generalization_gap")
+        plt.close(fig_b)
 
 
+@plot_style.paper_style(two_columns=True)
 def plot_fig5_tsne(output_dir: Path, fig_dir: Path) -> None:
     """Fig. 5 (Req 4): t-SNE of 512-dim penultimate test representations + Silhouette score."""
     candidates = [
-        ("scratch_f010_s42", "From Scratch (10%)"),
-        ("frozen_f010_s42", "Frozen Pretrained (10%)"),
-        ("full_ft_f010_s42", "Full Fine-Tuning (10%)"),
-        ("full_ft_f100_s42", "Full Fine-Tuning (100%)"),
+        ("scratch_f010_s42", "Scratch (10%)"),
+        ("frozen_f010_s42", "Frozen (10%)"),
+        ("full_ft_f010_s42", "Full FT (10%)"),
+        ("full_ft_f100_s42", "Full FT (100%)"),
     ]
     available = [
         (run, title, output_dir / "resnet18" / run / "test_embeddings.npz")
@@ -478,19 +556,32 @@ def plot_fig5_tsne(output_dir: Path, fig_dir: Path) -> None:
         print("[INFO] No test_embeddings.npz found; skipping Fig 5 (t-SNE).")
         return
 
-    selected_classes = list(range(10))
-    cmap = plt.get_cmap("tab10")
+    eda_path = output_dir / "eda_summary.json"
+    if eda_path.exists():
+        breeds = sorted(_load_json(eda_path)["per_class"], key=lambda row: row["class_id"])[:10]
+        class_names = {row["class_id"]: row["class_name"] for row in breeds}
+    else:
+        class_names = dict(enumerate((
+            "Abyssinian", "American Bulldog", "American Pit Bull Terrier", "Basset Hound",
+            "Beagle", "Bengal", "Birman", "Bombay", "Boxer", "British Shorthair",
+        )))
+    colors = ("#1843BA", "#be113c", "#FF9A35", "#64748D", "#21ef58")
+    classes = []
+    for is_cat, marker in ((True, "o"), (False, "^")):
+        group = [(key, name) for key, name in class_names.items() if _is_cat_breed(name) == is_cat]
+        classes.extend((key, name, marker, color)
+                       for (key, name), color in zip(group, colors, strict=True))
 
-    fig, axes = plt.subplots(1, len(available), figsize=(4.5 * len(available), 4.4))
-    if len(available) == 1:
-        axes = [axes]
-
-    for ax, (_, title, emb_path) in zip(axes, available):
+    fig, axes = plt.subplots(
+        1, len(available), figsize=plot_style.print_size(1.62, width_fraction=0.96, two_columns=True),
+        squeeze=False, layout="constrained",
+    )
+    for ax, (_, title, emb_path) in zip(axes.flat, available):
         data = np.load(emb_path)
         feats = data["features"]
         labels = data["labels"]
 
-        mask = np.isin(labels, selected_classes)
+        mask = np.isin(labels, list(class_names))
         feats_sub = feats[mask]
         labels_sub = labels[mask]
 
@@ -499,118 +590,134 @@ def plot_fig5_tsne(output_dir: Path, fig_dir: Path) -> None:
         emb_2d = tsne.fit_transform(feats_sub)
         sil = silhouette_score(feats_sub, labels_sub)
 
-        for idx, c in enumerate(selected_classes):
-            cm = labels_sub == c
-            ax.scatter(emb_2d[cm, 0], emb_2d[cm, 1], s=14, alpha=0.78, color=cmap(idx))
-        ax.set_title(f"{title}\n(Silhouette = {sil:.3f})", fontsize=10.5)
+        for class_id, _, marker, color in classes:
+            selected = labels_sub == class_id
+            ax.scatter(emb_2d[selected, 0], emb_2d[selected, 1], s=4.5, marker=marker,
+                       alpha=0.75, color=color, linewidths=0, rasterized=True)
+        ymin, ymax = float(emb_2d[:, 1].min()), float(emb_2d[:, 1].max())
+        yrange = max(ymax - ymin, 1e-6)
+        ax.set_ylim(ymin - 0.06 * yrange, ymax + 0.25 * yrange)
+        ax.set_title(title)
+        ax.text(0.97, 0.96, f"Sil. {sil:.3f}", transform=ax.transAxes, ha="right", va="top",
+                fontsize=5.4, fontweight="bold", zorder=5,
+                bbox=dict(boxstyle="round,pad=0.18", fc="white", ec=plot_style.LEGEND_EDGE, lw=0.5))
         ax.set_xticks([])
         ax.set_yticks([])
+        plot_style.style_axes(ax, grid=None)
 
-    fig.suptitle(
-        "t-SNE of ResNet-18 Penultimate Representations (First 10 Pet Breeds on Test Set)",
-        y=1.02,
-        fontsize=12,
-        fontweight="bold",
+    tsne_short = {
+        "Abyssinian": "Abyss.",
+        "American Bulldog": "Am. Bulldog",
+        "American Pit Bull Terrier": "Am. Pit Bull",
+        "Basset Hound": "Basset H.",
+        "Beagle": "Beagle",
+        "Bengal": "Bengal",
+        "Birman": "Birman",
+        "Bombay": "Bombay",
+        "Boxer": "Boxer",
+        "British Shorthair": "Brit. Sh.",
+    }
+    legend_order = [*classes[:5], *classes[5:]]
+    fig.legend(
+        handles=[Line2D([], [], linestyle="none", marker=marker, color=color, markersize=3.2,
+                        markeredgewidth=0, label=tsne_short.get(name, BREED_SHORT.get(name, name)))
+                 for _, name, marker, color in legend_order],
+        loc="outside lower center", ncol=10, fontsize=4.5,
+        handletextpad=0.15, columnspacing=0.4, borderpad=0.25,
     )
-    plt.tight_layout()
-    plt.savefig(fig_dir / "fig5_tsne_representations.png", bbox_inches="tight")
+    plot_style.save_figure(fig, fig_dir / "fig5_tsne_representations")
     plt.close(fig)
 
 
+@plot_style.paper_style()
 def plot_fig6_tradeoff(summary: pd.DataFrame, fig_dir: Path) -> None:
     """Fig. 6 (Req 5): Performance vs. Total Training Time Pareto Frontier."""
     sub = summary[
         (summary["backbone"] == "resnet18") & (summary["fraction_pct"].isin([10, 100]))
-    ].copy()
+    ].dropna(subset=["total_time_mean", "test_f1_mean"])
+    sub = sub[sub["total_time_mean"] > 0]
     if sub.empty:
         return
 
-    fig, ax = plt.subplots(figsize=(9.6, 5.4))
+    fig, ax = plt.subplots(
+        figsize=plot_style.print_size(1.63, width_fraction=0.88), layout="constrained",
+    )
     markers = {10: "o", 100: "D"}
-    sizes = {10: 135, 100: 195}
-    offsets = {
-        ("partial_ft", 10): (-12, -36),
-        ("full_ft", 10): (18, -26),
-        ("frozen", 10): (16, 12),
-        ("scratch", 10): (14, 14),
-        ("partial_ft", 100): (-95, 16),
-        ("frozen", 100): (-22, -40),
-        ("full_ft", 100): (18, 16),
-        ("scratch", 100): (-108, -24),
+    callouts = {
+        ("frozen", 10): ((3, 7), "left", "bottom"),
+        ("full_ft", 100): ((9, -7), "left", "center"),
     }
-
-    # Compute Pareto frontier (maximize Macro-F1, minimize Total Time)
-    pts = sorted(
-        [(r["total_time_mean"], r["test_f1_mean"] * 100) for _, r in sub.iterrows()],
-        key=lambda t: t[0],
-    )
-    pareto, best_y = [], -1.0
-    for px, py in pts:
-        if py > best_y:
-            pareto.append((px, py))
-            best_y = py
-    ax.plot(
-        [p[0] for p in pareto],
-        [p[1] for p in pareto],
-        linestyle="--",
-        color="#555555",
-        lw=1.6,
-        alpha=0.75,
-        zorder=2,
-    )
-
-    for _, r in sub.iterrows():
-        strat = r["strategy"]
-        pct = int(r["fraction_pct"])
-        x = r["total_time_mean"]
-        y = r["test_f1_mean"] * 100
-        ax.scatter(
-            x,
-            y,
-            s=sizes[pct],
-            marker=markers[pct],
-            color=STRATEGY_COLORS[strat],
-            edgecolors="black",
-            linewidths=0.9,
-            alpha=0.92,
-            zorder=4,
-        )
-        dx, dy = offsets.get((strat, pct), (12, 8))
-        ax.annotate(
-            f"{STRATEGY_SHORT[strat]} ({pct}%)\n{y:.1f}%, {x:.0f}s",
-            (x, y),
-            textcoords="offset points",
-            xytext=(dx, dy),
-            fontsize=8.5,
-            fontweight="bold",
-            bbox=dict(boxstyle="round,pad=0.22", fc="white", ec="#cccccc", alpha=0.92),
-            arrowprops=dict(arrowstyle="-", color="#777777", lw=0.8, shrinkA=0, shrinkB=5),
-            zorder=5,
-        )
-
-    handles = [
-        Line2D([0], [0], marker="s", color="w", markerfacecolor=STRATEGY_COLORS[s], markersize=9, label=STRATEGY_LABELS[s])
-        for s in STRATEGY_ORDER
-        if s in set(sub["strategy"])
-    ] + [
-        Line2D([0], [0], marker="o", color="w", markerfacecolor="gray", markeredgecolor="black", markersize=8, label="10% Labeled Data"),
-        Line2D([0], [0], marker="D", color="w", markerfacecolor="gray", markeredgecolor="black", markersize=8, label="100% Labeled Data"),
-        Line2D([0], [0], linestyle="--", color="#555555", lw=1.6, label="Pareto Frontier"),
-    ]
-
+    ax.set_facecolor(plot_style.GROUP_BACKGROUNDS[0])
     ax.set_xscale("log")
-    ax.set_xlim(22, 1750)
+    ax.xaxis.set_major_locator(FixedLocator([30, 100, 300, 1000]))
+    ax.xaxis.set_major_formatter(ScalarFormatter())
+    ax.margins(x=0.10)
     ax.set_ylim(0, 106)
-    ax.set_xlabel("Total Training Time (seconds, log scale)")
-    ax.set_ylabel("Test Macro-F1 (%)")
-    ax.set_title("Trade-off: Classification Performance vs. Computational Cost & Labeled Data Size (ResNet-18)")
-    ax.legend(handles=handles, loc="lower right", fontsize=8.3, ncol=2, frameon=True)
+    ax.set_yticks([0, 25, 50, 75, 100])
+    ax.set_xlabel("Total training time (s, log)", labelpad=2)
+    ax.set_ylabel("Test Macro-F1 (%)", labelpad=2)
+    plot_style.style_axes(ax, log_x=True)
+    ax.tick_params(axis="both", pad=2.5)
 
-    plt.tight_layout()
-    plt.savefig(fig_dir / "fig6_efficiency_tradeoff.png", bbox_inches="tight")
+    pts = sorted(
+        zip(sub["total_time_mean"], sub["test_f1_mean"] * 100),
+        key=lambda point: (point[0], -point[1]),
+    )
+    pareto, best_score = [], -np.inf
+    for time, score in pts:
+        if score > best_score:
+            pareto.append((time, score))
+            best_score = score
+    frontier, = ax.plot(
+        *zip(*pareto), linestyle="--", color="black", zorder=2, label="Pareto",
+    )
+
+    for row in sub.itertuples():
+        strategy, fraction = row.strategy, row.fraction_pct
+        time, score = row.total_time_mean, row.test_f1_mean * 100
+        color = plot_style.STRATEGY_COLORS[strategy]
+        frozen_full_data = (strategy, fraction) == ("frozen", 100)
+        ax.scatter(
+            time, score, marker=markers[fraction], s=58 if frozen_full_data else 22,
+            facecolors="none" if frozen_full_data else color,
+            edgecolors=color if frozen_full_data else "black",
+            linewidths=0.85 if frozen_full_data else plot_style.MARK_EDGE_WIDTH,
+            zorder=3 if frozen_full_data else 4,
+        )
+        if (strategy, fraction) in callouts:
+            offset, ha, va = callouts[strategy, fraction]
+            plot_style.badge(ax, f"{score:.1f}%", (time, score), offset,
+                             color=color, ha=ha, va=va)
+
+    present_strategies = set(sub["strategy"])
+    strategy_handles = [
+        plot_style.legend_swatch(plot_style.STRATEGY_COLORS[strategy], STRATEGY_SHORT[strategy])
+        for strategy in STRATEGY_ORDER if strategy in present_strategies
+    ]
+    present_fractions = set(sub["fraction_pct"])
+    data_handles = [
+        Line2D(
+            [], [], linestyle="none", marker=marker, markersize=4.7,
+            markerfacecolor="white", markeredgecolor="black",
+            markeredgewidth=plot_style.MARK_EDGE_WIDTH, label=f"{fraction}% data",
+        )
+        for fraction, marker in markers.items() if fraction in present_fractions
+    ]
+    unified_legend = ax.legend(
+        handles=[*strategy_handles, *data_handles, frontier],
+        loc="lower right", ncol=2, fontsize=5.0, handlelength=1.0,
+        columnspacing=0.6, borderpad=0.22, labelspacing=0.22,
+    )
+    for label in unified_legend.get_texts():
+        if label.get_text() == STRATEGY_SHORT["frozen"]:
+            label.set_color(plot_style.STRATEGY_COLORS["frozen"])
+            label.set_fontweight("bold")
+
+    plot_style.save_figure(fig, fig_dir / "fig6_efficiency_tradeoff")
     plt.close(fig)
 
 
+@plot_style.paper_style(two_columns=True)
 def plot_fig7_error_analysis(output_dir: Path, fig_dir: Path) -> None:
     """Fig. 7 (Extension): Top-12 confused breed pairs + Cat vs. Dog Macro-F1 breakdown."""
     preferred = [
@@ -658,79 +765,110 @@ def plot_fig7_error_analysis(output_dir: Path, fig_dir: Path) -> None:
         )
         species_rows.append(
             {
-                "strategy": STRATEGY_SHORT[strat],
-                "Cat Breeds (12)": float(np.mean(per_cls_f1[cat_ids]) * 100),
-                "Dog Breeds (25)": float(np.mean(per_cls_f1[dog_ids]) * 100),
+                "strategy": strat,
+                "Cat": float(np.mean(per_cls_f1[cat_ids]) * 100),
+                "Dog": float(np.mean(per_cls_f1[dog_ids]) * 100),
             }
         )
 
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 5.5), gridspec_kw={"width_ratios": [1.4, 1.0]})
+    fig, (ax1, ax2) = plt.subplots(
+        1, 2, figsize=plot_style.print_size(1.72, width_fraction=0.72, two_columns=True),
+        gridspec_kw={"width_ratios": [0.8, 1.2]}, layout="constrained",
+    )
+    plot_style.style_axes(ax1, grid="x")
+    ax1.tick_params(axis="y", labelsize=5.5, pad=3)
 
     if top_pairs:
-        pair_labels = [f"{a} → {b}" for (a, b), _ in top_pairs][::-1]
-        pair_counts = [c for _, c in top_pairs][::-1]
-        ax1.barh(pair_labels, pair_counts, color="#C44E52", alpha=0.88)
-        ax1.set_xlabel("Misclassification Count on Test Set")
-        ax1.set_title(f"Top-12 Confused Breed Pairs ({chosen_label})")
+        pairs = top_pairs[::-1]
+        pair_labels = [f"{BREED_SHORT.get(true, true)} › {BREED_SHORT.get(pred, pred)}"
+                       for (true, pred), _ in pairs]
+        pair_counts = [count for _, count in pairs]
+        ax1.barh(pair_labels, pair_counts, color="#b5b7c4",
+                 edgecolor="black", height=0.78, zorder=3)
+        ax1.set_xlabel("Test errors")
+        ax1.set_title(chosen_label)
+        ax1.set_xlim(left=0)
 
+    plot_style.style_axes(ax2, grid="y")
     if species_rows:
         sp_df = pd.DataFrame(species_rows)
         x = np.arange(len(sp_df))
-        w = 0.35
-        ax2.bar(x - w / 2, sp_df["Cat Breeds (12)"], w, label="Cat Breeds (12)", color="#E69F00")
-        ax2.bar(x + w / 2, sp_df["Dog Breeds (25)"], w, label="Dog Breeds (25)", color="#56B4E9")
-        ax2.set_xticks(x)
-        ax2.set_xticklabels(sp_df["strategy"])
+        width = 0.38
+        backgrounds = dict(zip(STRATEGY_ORDER, plot_style.GROUP_BACKGROUNDS))
+        plot_style.group_bands(ax2, x, [backgrounds[strategy] for strategy in sp_df["strategy"]])
+        handles = []
+        for species, count, offset in (("Cat", len(cat_ids), -width / 2), ("Dog", len(dog_ids), width / 2)):
+            color = plot_style.SPECIES_COLORS[species]
+            ax2.bar(x + offset, sp_df[species], width, color=color, edgecolor="black", zorder=3)
+            handles.append(plot_style.legend_swatch(color, f"{species} ({count})"))
+        ax2.set_xticks(x, [STRATEGY_SHORT[s].replace(" ", "\n") for s in sp_df["strategy"]],
+                       fontsize=6)
         ax2.set_ylabel("Mean Class F1 (%)")
-        ax2.set_ylim(0, 105)
-        ax2.set_title("Cat vs. Dog Fine-Grained Macro-F1 (10% Data)")
-        ax2.legend()
+        ax2.set(xlim=(-0.5, len(x) - 0.5), ylim=(0, 100), yticks=[0, 25, 50, 75, 100])
+        ax2.tick_params(pad=2.5)
+        ax2.set_title("10% labeled data")
+        ax2.legend(handles=handles, loc="upper left", ncol=1, fontsize=4.6,
+                   borderpad=0.18, labelspacing=0.18, handlelength=0.85, borderaxespad=0.28)
 
-    plt.tight_layout()
-    plt.savefig(fig_dir / "fig7_error_analysis.png", bbox_inches="tight")
+    plot_style.save_figure(fig, fig_dir / "fig7_error_analysis")
     plt.close(fig)
 
 
+@plot_style.paper_style()
 def plot_fig8_backbone_comparison(summary: pd.DataFrame, fig_dir: Path) -> None:
     """Fig. 8 (Extension): Cross-backbone validation (ResNet-18 vs. MobileNetV3-Small)."""
-    backbones = summary["backbone"].unique().tolist()
+    sub = summary[summary["fraction_pct"] == 10]
+    backbones = [name for name in BACKBONE_LABELS if name in set(sub["backbone"])]
     if len(backbones) < 2:
         return
 
-    sub = summary[summary["fraction_pct"] == 10].copy()
     strategies = [s for s in STRATEGY_ORDER if s in set(sub["strategy"])]
 
-    fig, ax = plt.subplots(figsize=(9.5, 5.0))
+    fig, ax = plt.subplots(
+        figsize=plot_style.print_size(1.24, width_fraction=0.92), layout="constrained",
+    )
     x = np.arange(len(strategies))
-    w = 0.8 / len(backbones)
-    palette = ["#1F77B4", "#2CA02C", "#9467BD"]
+    width = 0.62 / len(backbones)
+    backgrounds = dict(zip(STRATEGY_ORDER, plot_style.GROUP_BACKGROUNDS))
+    plot_style.group_bands(ax, x, [backgrounds[strategy] for strategy in strategies])
+    plot_style.style_axes(ax, grid="y")
 
-    for bi, bb in enumerate(backbones):
-        bb_df = sub[sub["backbone"] == bb].set_index("strategy")
-        vals = [bb_df.loc[s, "test_f1_mean"] * 100 if s in bb_df.index else np.nan for s in strategies]
-        offset = (bi - (len(backbones) - 1) / 2) * w
-        bars = ax.bar(x + offset, vals, w * 0.92, label=bb, color=palette[bi % len(palette)], alpha=0.9)
-        for bar, v in zip(bars, vals):
-            if not np.isnan(v):
-                ax.text(
-                    bar.get_x() + bar.get_width() / 2,
-                    v + 1.0,
-                    f"{v:.1f}%",
-                    ha="center",
-                    va="bottom",
-                    fontsize=8.5,
-                    fontweight="bold",
+    handles = []
+    backbone_colors = ["#3F6BE2", "#cbd6f5", "#FF9A35"]
+    for index, backbone in enumerate(backbones):
+        rows = sub[sub["backbone"] == backbone].set_index("strategy").reindex(strategies)
+        values = rows["test_f1_mean"].to_numpy() * 100
+        bar_color = backbone_colors[index]
+        hatch = "////" if index == 2 else None
+        offset = (index - (len(backbones) - 1) / 2) * width
+        ax.bar(x + offset, values, width, color=bar_color,
+               edgecolor="black", hatch=hatch, zorder=3)
+        for position, value in zip(x + offset, values):
+            if not np.isfinite(value):
+                continue
+            if index == 1 and position < 0.5 and value < 1.0:
+                ax.annotate(
+                    f"{value:.1f}", xy=(position, value + 0.5),
+                    xytext=(position, 14.0), ha="center", va="bottom",
+                    fontsize=5.2,
+                    arrowprops=dict(arrowstyle="<-", color="black", lw=0.6, shrinkA=0, shrinkB=1),
                 )
+            else:
+                ax.annotate(f"{value:.1f}", (position, value), xytext=(0, 1.5),
+                            textcoords="offset points", ha="center", va="bottom", fontsize=5.2)
+        short_backbone = BACKBONE_LABELS[backbone].replace("MobileNetV3-Small", "MobileNetV3-S")
+        handles.append(plot_style.legend_swatch(bar_color, short_backbone,
+                                               hatch=hatch))
 
-    ax.set_xticks(x)
-    ax.set_xticklabels([STRATEGY_LABELS[s] for s in strategies])
-    ax.set_ylabel("Test Macro-F1 (%)")
-    ax.set_ylim(0, 105)
-    ax.set_title("Cross-Backbone Validation on 10% Labeled Data")
-    ax.legend()
+    ax.set_xticks(x, [STRATEGY_SHORT[s] for s in strategies], fontsize=6)
+    ax.set_ylabel("Test Macro-F1 (%)", labelpad=2)
+    ax.set(xlim=(-0.5, len(x) - 0.5), ylim=(0, 100), yticks=[0, 25, 50, 75, 100])
+    ax.tick_params(pad=2.5)
+    ax.legend(handles=handles, loc="upper left", ncol=1, fontsize=4.1,
+              borderpad=0.26, labelspacing=0.14, handlelength=0.7,
+              handletextpad=0.35, borderaxespad=0.40)
 
-    plt.tight_layout()
-    plt.savefig(fig_dir / "fig8_backbone_comparison.png", bbox_inches="tight")
+    plot_style.save_figure(fig, fig_dir / "fig8_backbone_comparison")
     plt.close(fig)
 
 
